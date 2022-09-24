@@ -51,8 +51,6 @@ def lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]
 
             # Next, we want to iterate through the row, subtracting the row product of the multiplier
             # and the row above.
-            # We begin at j+1 becaue the first entry we can assume that it will be 0 (we want to
-            # look to the right of the diagonal).
             for k in range(j, n, 1):
                 a[i,k] = a[i,k] - (mult * a[j,k])
     return L, a
