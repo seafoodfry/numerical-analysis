@@ -79,7 +79,7 @@ def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_i
     return approx
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     func = lambda x: x**3 + x - 1
     solution = bisection_eq_solver(func, 0, 1, 0.0005)
     print(f"bisection solution: {solution}")

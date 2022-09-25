@@ -33,5 +33,6 @@ def horner_simple_polynomial_evaluation(d: int, c: List[float], x: float) -> flo
 
     return y
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     horner_simple_polynomial_evaluation(4, [-1, 5, -3, 3, 2], 0.5) # y = 1.25
