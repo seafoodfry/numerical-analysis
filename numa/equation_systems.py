@@ -12,14 +12,14 @@ def simple_gaussian_elimination(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray[A
     machine_epsilon = np.finfo(float).eps
     nrows, ncols = a.shape
     n = nrows
-    for j in range(0, n-1, 1): # We only need to elminate n-1 columns.
-        if abs(a[j,j]) < machine_epsilon:
+    for j in range(0, n-1, 1):  # We only need to elminate n-1 columns.
+        if abs(a[j, j]) < machine_epsilon:
             raise PivotIsZero(a[j])
 
         # We need to look at the next row (we always subtract the row above).
         # We want to look below the diagonal.
         for i in range(j+1, n, 1):
-            mult = a[i,j] / a[j,j]
+            mult = a[i, j] / a[j, j]
 
             # Next, we want to iterate through the row, subtracting the row product of the multiplier
             # and the row above.
@@ -27,8 +27,9 @@ def simple_gaussian_elimination(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray[A
             # look to the right of the diagonal).
             b[i] = b[i] - (mult*b[j])
             for k in range(j+1, n, 1):
-                a[i,k] = a[i,k] - (mult * a[j,k])
+                a[i, k] = a[i, k] - (mult * a[j, k])
     return a, b
+
 
 def lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]]:
     a = a.astype(np.float64)
@@ -39,21 +40,22 @@ def lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]
     L = np.zeros((n, n), np.float64)
     np.fill_diagonal(L, 1)
 
-    for j in range(0, n-1, 1): # We only need to elminate n-1 columns.
-        if abs(a[j,j]) < machine_epsilon:
+    for j in range(0, n-1, 1):  # We only need to elminate n-1 columns.
+        if abs(a[j, j]) < machine_epsilon:
             raise PivotIsZero(a[j])
 
         # We need to look at the next row (we always subtract the row above).
         # We want to look below the diagonal.
         for i in range(j+1, n, 1):
-            mult = a[i,j] / a[j,j]
-            L[i,j] = mult
+            mult = a[i, j] / a[j, j]
+            L[i, j] = mult
 
             # Next, we want to iterate through the row, subtracting the row product of the multiplier
             # and the row above.
             for k in range(j, n, 1):
-                a[i,k] = a[i,k] - (mult * a[j,k])
+                a[i, k] = a[i, k] - (mult * a[j, k])
     return L, a
+
 
 def pa_lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], npt.NDArray[Any]]:
     a = a.astype(np.float64)
@@ -67,12 +69,14 @@ def pa_lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[A
     P = np.zeros((n, n), np.float64)
     np.fill_diagonal(P, 1)
 
-    for j in range(0, n-1, 1): # We only need to elminate n-1 columns.
+    for j in range(0, n-1, 1):  # We only need to elminate n-1 columns.
         # To get the pivot, find the row with the element that has the greatest absolute value
         # in the same column we are already looking at.
         print(f"--> looking for the max abs value of {U[j:, j]}")
-        index_of_max_abs = np.absolute(U[j:, j]).argmax() # get the j-th column starting at the j-th entry.
-        index_of_max_abs += j # Because when we look after the j-th entry of a column we are decreasing the value of the index by j.
+        index_of_max_abs = np.absolute(U[j:, j]).argmax()  # get the j-th column starting at the j-th entry.
+        # Add j to the index because when we look after the j-th entry of a column we are decreasing the value
+        # of the index by j.
+        index_of_max_abs += j
         if j != index_of_max_abs:
             print(f"current index {j}. New pivot index: {index_of_max_abs}")
             # The X[[i, j]] notation gets rows i and j and packges them into a [sub-]matrix.
@@ -82,19 +86,19 @@ def pa_lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[A
             print(f"current P:\n{P}")
             print(f"A after pivot:\n{U}")
 
-        if abs(U[j,j]) < machine_epsilon:
+        if abs(U[j, j]) < machine_epsilon:
             raise SingularMatrix()
 
         # We need to look at the next row (we always subtract the row above).
         # We want to look below the diagonal.
         for i in range(j+1, n, 1):
-            mult = U[i,j] / U[j,j]
-            L[i,j] = mult
+            mult = U[i, j] / U[j, j]
+            L[i, j] = mult
 
             # Next, we want to iterate through the row, subtracting the row product of the multiplier
             # and the row above.
             for k in range(j, n, 1):
-                U[i,k] = U[i,k] - (mult * U[j,k])
+                U[i, k] = U[i, k] - (mult * U[j, k])
         print(f"new A:\n{U}")
         print(f"current L:\n{L}")
 
@@ -116,13 +120,12 @@ def back_substitution(a: npt.NDArray, b: npt.NDArray) -> npt.ArrayLike:
         # Then, proceed to subtract terms from the left of the equation.
         # We'll be left with a[i,0]*x = b[i], which we will divide afterwards.
         for j in range(i+1, n, 1):
-            b[i] = b[i] - (a[i,j] * x[j])
-        x[i] = b[i]/a[i,i]
+            b[i] = b[i] - (a[i, j] * x[j])
+        x[i] = b[i]/a[i, i]
     return x.astype(np.float64)
 
-    
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print("Gaussian elimination...")
     a = np.array([[1, 1], [3, -4]])
     b = np.array([[3], [2]])

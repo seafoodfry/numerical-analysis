@@ -6,10 +6,12 @@ class NoSolution(Exception):
         self.message = message
         super().__init__(self.message)
 
+
 class PivotIsZero(Exception):
     def __init__(self, bad_row: npt.ArrayLike):
         self.message = f"Bad pivot in row: {bad_row}"
         super().__init__(self.message)
+
 
 class SingularMatrix(Exception):
     def __init__(self):
