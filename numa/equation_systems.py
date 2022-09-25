@@ -73,7 +73,7 @@ def pa_lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[A
         print(f"--> looking for the max abs value of {U[j:, j]}")
         index_of_max_abs = np.absolute(U[j:, j]).argmax() # get the j-th column starting at the j-th entry.
         index_of_max_abs += j # Because when we look after the j-th entry of a column we are decreasing the value of the index by j.
-        if j != index_of_max_abs and index_of_max_abs > j:
+        if j != index_of_max_abs:
             print(f"current index {j}. New pivot index: {index_of_max_abs}")
             # The X[[i, j]] notation gets rows i and j and packges them into a [sub-]matrix.
             P[[j, index_of_max_abs]] = P[[index_of_max_abs, j]]
