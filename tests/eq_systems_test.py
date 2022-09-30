@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from numa.equation_systems import simple_gaussian_elimination, back_substitution, lu_factorization, pa_lu_factorization
+from numa.equation_systems import simple_gaussian_elimination, back_substitution, lu_factorization, pa_lu_factorization, jacobi
 from numa.exceptions import PivotIsZero, SingularMatrix
 
 
@@ -89,3 +89,10 @@ def test_pa_lu_gaussian_factorization_exception():
     a = np.array([[0, 3], [0, 2]])
     with pytest.raises(SingularMatrix) as e_info:
         pa_lu_factorization(a)
+
+def test_jacobi_method_one():
+    A = np.array([[3, 1], [1, 2]])
+    b = np.array([5, 5])
+    x = np.array([0, 0])
+    x = jacobi(A, b, x, 10)
+    assert np.allclose(x, np.array([1, 2]), atol=0.001)
