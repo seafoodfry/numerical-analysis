@@ -25,22 +25,23 @@ def bisection_eq_solver(func: Callable[[float], float], a: float, b: float, tole
     while (b-a)/2.0 > tolerance:
         print(f"Iteration number {iter}")
         iter += 1
-        c = (a+b)/2.0 # Midway point.
+        c = (a+b)/2.0  # Midway point.
         f_c = func(c)
 
         approximation = c
         if f_c == 0:
             break
-        
+
         # If f(a) and f(c) differ in sign then it means we must chose a "b" closer to a.
         # Else, let's get "a" closer to b.
-        if func(a) * f_c < 0: # There is a solution in [a,c].
+        if func(a) * f_c < 0:  # There is a solution in [a,c].
             b = c
-        else: # f(c) * f(b) < 0.
+        else:  # f(c) * f(b) < 0.
             a = c
 
     print(f"final approximation: {approximation}")
     return approximation
+
 
 def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_iterations: int) -> float:
     """ Secant method for finding roots
@@ -62,7 +63,7 @@ def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_i
         f_x1 = func(x1)
         f_x0 = func(x0)
         diff_x = x1 - x0
-        return x1 - ( (f_x1 * diff_x) / (f_x1 - f_x0) )
+        return x1 - ((f_x1 * diff_x) / (f_x1 - f_x0))
 
     approx = None
     iter_num = 0
@@ -80,7 +81,9 @@ def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_i
 
 
 if __name__ == "__main__":
-    func = lambda x: x**3 + x - 1
+    def func(x):
+        return x**3 + x - 1
+
     solution = bisection_eq_solver(func, 0, 1, 0.0005)
     print(f"bisection solution: {solution}")
     solution = secant_eq_solver(func, 0, 1, 10)
