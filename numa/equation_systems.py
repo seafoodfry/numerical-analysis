@@ -58,6 +58,9 @@ def lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any]
 
 
 def pa_lu_factorization(a: npt.NDArray) -> Tuple[npt.NDArray[Any], npt.NDArray[Any], npt.NDArray[Any]]:
+    """
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lu.html
+    """
     a = a.astype(np.float64)
     machine_epsilon = np.finfo(float).eps
 
@@ -125,6 +128,24 @@ def back_substitution(a: npt.NDArray, b: npt.NDArray) -> npt.ArrayLike:
     return x.astype(np.float64)
 
 
+def jacobi(A: npt.NDArray, b: npt.ArrayLike, x: npt.ArrayLike, k: int) -> npt.ArrayLike:
+    """
+    X0 is the initial vector
+    X(k+1) = D^-1 * (b - (L+U)Xk)  for k = 0, 1, 2,...
+
+    Here D is the diagonal of A where A = L + D + U.
+    Unlike in PA = LU factorization, L and U have 0s in their diagonals.
+    """
+    D = np.diag(A)
+    R = A - np.diagflat(D)  # Remainder (R = L+U).
+    for i in range(k):
+        # We could also do D^-1 = np.linalg.inv(D)
+        # See https://numpy.org/devdocs/reference/generated/numpy.linalg.inv.html#numpy.linalg.inv
+        x = (b - np.dot(R, x)) / D
+        print(f"jacobi iteration {i+1}. current X= {x}")
+    return x
+
+
 if __name__ == "__main__":
     print("Gaussian elimination...")
     a = np.array([[1, 1], [3, -4]])
@@ -162,3 +183,10 @@ if __name__ == "__main__":
     print(P)
     print(L)
     print(U)
+
+    print("Jacobi method...")
+    A = np.array([[3, 1], [1, 2]])
+    b = np.array([5, 5])
+    x = np.array([0, 0])
+    x = jacobi(A, b, x, 10)
+    print(f"Final x: {x}")
