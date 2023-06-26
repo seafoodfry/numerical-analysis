@@ -4,7 +4,7 @@ iniconfig==2.0.0
 mccabe==0.7.0
 numpy==1.24.3
 packaging==23.1
-pluggy==1.0.0
+pluggy==1.2.0
 py==1.11.0
 pyflakes==3.0.1
 pyparsing==3.0.9
