@@ -20,6 +20,12 @@ tfenv install
 tfenv use <version>
 ```
 
+You'll also need
+
+```
+brew install jq
+```
+
 ---
 
 ## Running TF
@@ -42,7 +48,22 @@ aws sts assume-role --profile ec2 --duration-seconds 900 --role-arn $ROLE --role
 
 ```
 terraform init
-terraform plan -out a.plan
+./run-cmd-in-shell.sh terraform plan -out a.plan -var my_ip="x.x.x.x"
 ```
 
 Enter your IP.
+Then apply the plan
+
+```
+./run-cmd-in-shell.sh terraform apply a.plan
+```
+
+To clean up
+```
+./run-cmd-in-shell.sh terraform destroy -var my_ip="x.x.x.x"
+```
+
+You can find logs in
+```
+cat /var/log/cloud-init-output.log
+```
