@@ -46,12 +46,18 @@ aws sts assume-role --profile ec2 --duration-seconds 900 --role-arn $ROLE --role
 
 ## Spining Up an EC2
 
+Remember to run
 ```
 terraform init
+```
+If this is your first time doing it.
+
+Then,
+```
 ./run-cmd-in-shell.sh terraform plan -out a.plan -var my_ip="x.x.x.x"
 ```
-
 Enter your IP.
+
 Then apply the plan
 
 ```
@@ -66,4 +72,31 @@ To clean up
 You can find logs in
 ```
 cat /var/log/cloud-init-output.log
+```
+
+---
+
+## SSH Tips
+
+To copy files
+```
+scp Makefile ubuntu@${EC2}:/home/ubuntu
+```
+
+---
+
+## Jupyter Tips
+
+There are ready to use images in
+[quay.io/organization/jupyter](https://quay.io/organization/jupyter).
+That repository is documented in
+[jupyter-docker-stacks](https://jupyter-docker-stacks.readthedocs.io/en/latest/).
+
+```
+docker run -p 8888:8888 quay.io/jupyter/scipy-notebook:python-3.11
+```
+
+You can then view it locally by running
+```
+ssh -L 8888:127.0.0.1:8888 ubuntu@${EC2}
 ```

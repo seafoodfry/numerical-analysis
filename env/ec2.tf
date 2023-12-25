@@ -17,10 +17,13 @@ locals {
   }
 }
 
-resource "aws_spot_instance_request" "ubuntu" {
-  spot_price           = "0.06" # https://aws.amazon.com/ec2/spot/pricing/
-  spot_type            = "one-time"
-  wait_for_fulfillment = true
+resource "aws_instance" "ubuntu" {
+  instance_market_options {
+    market_type = "spot"
+    spot_options {
+      max_price = "0.06" # https://aws.amazon.com/ec2/spot/pricing/
+    }
+  }
 
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.xlarge"
@@ -47,6 +50,6 @@ resource "aws_spot_instance_request" "ubuntu" {
 }
 
 output "ubuntu" {
-  value       = aws_spot_instance_request.ubuntu.public_dns
+  value       = aws_instance.ubuntu.public_dns
   description = "Public DNS"
 }
