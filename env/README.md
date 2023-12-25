@@ -83,6 +83,11 @@ To copy files
 scp Makefile ubuntu@${EC2}:/home/ubuntu
 ```
 
+Or
+```
+scp ubuntu@${EC2}:/home/ubuntu/Animations-101.ipynb .
+```
+
 ---
 
 ## Jupyter Tips
