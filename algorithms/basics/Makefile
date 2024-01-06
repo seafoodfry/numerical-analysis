@@ -1,3 +1,6 @@
 
 all:
-	docker run -it -p 8888:8888 -v $(CURDIR):/home/jovyan jupyter/scipy-notebook:python-3.10
+	docker run \
+		-v $(PWD):/home/jovyan \
+		-p 8888:8888 \
+		quay.io/jupyter/scipy-notebook:python-3.11
