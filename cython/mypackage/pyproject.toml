@@ -4,7 +4,8 @@ version = "0.0.1"
 requires-python = ">=3.9"
 
 [build-system]
-build-backend = 'mesonpy'
+build-backend = "setuptools.build_meta"
+#build-backend = 'mesonpy'
 requires = [
     "meson-python>=0.15.0",
 
@@ -34,6 +35,9 @@ requires = [
     # Python 3.13 has known issues that are only fixed in numpy 2.0.0.dev0
     "numpy>=2.0.0.dev0; python_version>='3.13'",
 ]
+
+[tool.setuptools]
+include-package-data = true
 
 [tool.setuptools.packages]
 find = {}  # Scan the project directory with the default parameters

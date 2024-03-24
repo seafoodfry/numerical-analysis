@@ -18,6 +18,6 @@ RUN apt-get update -y && \
 # Manually creating a user. The other option is to run with
 # -u $(id -u ${USER}):$(id -g ${USER})
 RUN useradd --shell /bin/bash user
-#USER user
+USER user
 ENV PATH=$PATH:/home/user/.local/bin
 

@@ -1,6 +1,24 @@
 # Mypackage
 
 ```
+meson setup builddir
+```
+
+```
+meson compile -C builddir/
+```
+
+One could also run a `meson install` command but we'll skip it since we'll be using `pip install -e`.
+
+After this, we need to copy the compiled artifact, because `pip install -e` will
+not link data from the MANIFEST.in file.
+
+```
+cp builddir/hello.cpython-312-aarch64-linux-gnu.so mypackage/
+```
+(A symbolic link doesn't work.)
+
+```
 python -m build
 ```
 
@@ -13,13 +31,3 @@ pip install --editable .
 ```
 
 This is the reason we added `~/.local/bin` to the `PATH`.
-
----
-
-```
-meson setup builddir
-```
-
-```
-meson compile -C builddir/
-```

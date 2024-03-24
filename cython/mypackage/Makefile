@@ -26,9 +26,9 @@ network:
 
 .PHONY: clean
 clean:
-	rm -rf .cache .local dist mypackage.egg-info
+	rm -rf .cache .local dist mypackage.egg-info rm mypackage/hello.cpython-312-aarch64-linux-gnu.so
+	rm -rf .python_history .bash_history .viminfo
 	find . | grep -E "(/__pycache__$$|\.pyc$$|\.pyo$$)"
 	find . | grep -E "(/__pycache__$$|\.pyc$$|\.pyo$$)" | xargs rm -rf
-	rm -rf .bash_history .viminfo
 	docker network rm $(IMG)
 
