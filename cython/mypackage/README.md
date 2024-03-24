@@ -13,3 +13,13 @@ pip install --editable .
 ```
 
 This is the reason we added `~/.local/bin` to the `PATH`.
+
+---
+
+```
+meson setup builddir
+```
+
+```
+meson compile -C builddir/
+```
