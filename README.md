@@ -17,3 +17,8 @@ python -m pytest -v
 ```
 python -m numa.equation_solvers
 ```
+
+or
+```
+.venv/bin/python -m numa.equation_systems
+```
