@@ -6,17 +6,17 @@ from numa.exceptions import PivotIsZero, SingularMatrix
 
 def test_simple_gaussian_one():
     a = np.array([[1., 1.], [3., -4.]])
-    b = np.array([[3], [2]])
+    b = np.array([[3], [2]]).flatten()
     a, b = simple_gaussian_elimination(a, b)
 
     sol_a = np.array([[1., 1.], [3., -7.]])
-    sol_b = np.array([[3], [-7]])
+    sol_b = np.array([[3], [-7]]).flatten()
     assert np.allclose(a, sol_a)
     assert np.allclose(b, sol_b)
 
 def test_back_substitution_one():
     sol_a = np.array([[1., 1.], [3., -7.]])
-    sol_b = np.array([[3], [-7]])
+    sol_b = np.array([[3], [-7]]).flatten()
     c = back_substitution(sol_a, sol_b)
 
     solution = np.array([2., 1.])
@@ -34,7 +34,7 @@ def test_simple_gaussian_two():
 
 def test_back_substitution_two():
     sol_a = np.array([[1.,  2., -1.], [2., -3.,  0.], [-3.,  7., -2.]])
-    sol_b = np.array([[3.], [-3.], [-4.]])
+    sol_b = np.array([[3.], [-3.], [-4.]]).flatten()
     c = back_substitution(sol_a, sol_b)
 
     solution = np.array([3., 1., 2.])

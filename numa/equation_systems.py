@@ -147,9 +147,20 @@ def jacobi(A: npt.NDArray, b: npt.ArrayLike, x: npt.ArrayLike, k: int) -> npt.Ar
 
 
 if __name__ == "__main__":
+    """
+    We are flattening the b column vectors into simple 1D arrays because otherwise we run into this 
+    issue:
+
+    DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated,
+    and will error in future. Ensure you extract a single element from your array before
+    performing this operation. (Deprecated NumPy 1.25.)
+    x[i] = b[i]/a[i, i]
+
+    The other olution is to do b[i][0] which is not good.
+    """
     print("Gaussian elimination...")
     a = np.array([[1, 1], [3, -4]])
-    b = np.array([[3], [2]])
+    b = np.array([[3], [2]]).flatten()
     a, b = simple_gaussian_elimination(a, b)
     print(a)
     print(b)
