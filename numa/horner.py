@@ -3,12 +3,15 @@ Polynomial evaluation acording to Horner's method
 
 Implementation based on Numerical ANalysis 2nd ed by Timoty Sauer, page 3.
 """
+
 import numpy as np
 from typing import List
 
 
-def horner_simple_polynomial_evaluation(c: List[float], x: float, b: List[float] = None) -> float:
-    """ Use the horner method to evaluate a polynomial of degree d
+def horner_simple_polynomial_evaluation(
+    c: List[float], x: float, b: List[float] = None
+) -> float:
+    """Use the horner method to evaluate a polynomial of degree d
     at position x.
 
     Keep in mind that a properly factorized polynomial will look as follows:
@@ -40,9 +43,9 @@ def horner_simple_polynomial_evaluation(c: List[float], x: float, b: List[float]
 
     # We only look at the range "d-1" because we have already stored the last coefficient.
     # We stop at "-1" because range() is no inclusive.
-    for i in range(d-1, -1, -1):
+    for i in range(d - 1, -1, -1):
         print(f"{c[i]} + x*{y}")
-        y = (y * (x-b[i])) + c[i]
+        y = (y * (x - b[i])) + c[i]
 
     return y
 
