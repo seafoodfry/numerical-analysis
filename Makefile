@@ -9,13 +9,13 @@ venv:
 
 
 .PHONY: test
-test:
+test: lint
 	.venv/bin/python -m pytest -v
 
 .PHONY: lint
 lint:
-	.venv/bin/black numa
-	.venv/bin/pylint numa
+	.venv/bin/ruff format numa
+	.venv/bin/ruff check numa
 
 .PHONY: debug
 debug: network build
