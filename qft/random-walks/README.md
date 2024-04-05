@@ -21,3 +21,23 @@ flag during linking and do at least one of the following:
 See any operating system documentation about shared libraries for
 more information, such as the ld(1) and ld.so(8) manual pages.
 ```
+
+We decided against using ATLAS because it is not maintained.
+Its latest stable release was on 2016.
+The developer one in 2018.
+And the errate file for 3.10.2 said
+
+> Performance is terrible for AVX or later SIMD vectorization or large scale parallel architectures.
+> These platforms should probably use the developer release, which can more than double your performance. 
+
+But before we discovered that, we did download it and got this hash for it:
+
+```
+sha256sum atlas3.10.3.tar.bz2
+2688eb733a6c5f78a18ef32144039adcd62fabce66f2eb51dd59dde806a6d2b7  atlas3.10.3.tar.bz2
+```
+
+
+```
+gcc -Wall -I/usr/local/include -c Basic2D.cpp
+```
