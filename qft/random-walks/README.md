@@ -38,6 +38,17 @@ sha256sum atlas3.10.3.tar.bz2
 ```
 
 
+Compiled as:
 ```
-gcc -Wall -I/usr/local/include -c Basic2D.cpp
+g++ -Wall -I/usr/local/include -c Basic2D.cpp
 ```
+
+And linked as:
+```
+g++ -o Basic2D Basic2D.o -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lgsl -lgslcblas -lm
+```
+
+Note that the order of arguments when linking does matter.
+Also, we are using g++ because gcc doesn't by default link against the C++ standard library.
+Note that we also added the `-Wl` flag to pass the `-rpath` flag directly to the linker, so that it knew where
+to find `libgsl.so` without having to use the `-static` flag when compiling or having to do `export LD_LIBRARY_PATH=/usr/local/lib`.

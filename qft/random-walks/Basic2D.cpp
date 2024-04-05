@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     FILE* output;
     output = fopen("Basic2D.csv", "w");
 
-    int sampleSize = 1000; // 1_000.
+    int sampleSize = 100000; // 100_000.
     int minLength  = 1;
     int maxLength  = 50;
 
@@ -35,12 +35,26 @@ int main(int argc, char* argv[]) {
     // Mersenne Twister generator.
     gsl_rng* generator = gsl_rng_alloc(gsl_rng_mt19937);
 
+    // We will perform maxLength number of experiments.
+    // During each experiment, we will perform a sampleSize of random walks.
+    // After each sampleSize of random walks for a give number ot totalSteps,
+    // we will computer the avegraged squared distance traveled.
     for (int totalSteps = minLength; totalSteps <= maxLength; totalSteps++) {
         distTotal = 0;
 
+        // Perform sampleSize experiments of the entire random walk.
+        // Each experiment allows the walker to take totalSteps.
+        // The number of totalSteps is progressively increased from
+        // minLength to maxLength.
+        // After each random walk, compute the squared distance and add it to
+        // distTotal.
         for (int test = 0; test < sampleSize; test++) {
             x = y = 0;
 
+            // Chose 1 of the possible 4 directions in a 2D plane.
+            // Take a step in that direction.
+            // Do that for a total of totalSteps.
+            // Remember that the range of totalSteps is from minLength to maxLength.
             for (int step = 0; step < totalSteps; step++) {
                 direction = gsl_rng_get(generator) % 4;
                 if      (direction == 0) x += stepLength;
@@ -57,7 +71,7 @@ int main(int argc, char* argv[]) {
         // Compute the average distance and write it.
         distAvg = distTotal / sampleSize;
         cout << totalSteps << " " << distAvg << endl;
-        fprintf(output, "%i,\t%lf\n", totalSteps, distAvg);
+        fprintf(output, "%i,\t%.3lf\n", totalSteps, distAvg);
     }
 
     gsl_rng_free(generator);
