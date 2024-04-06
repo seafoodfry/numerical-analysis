@@ -1,6 +1,9 @@
 Basic2D
+Basic2D.c
+Basic2D_pythonic.c
 
 .bash_history
 
 *.o
 *.csv
+*.so
