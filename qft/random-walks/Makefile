@@ -19,5 +19,5 @@ run2dwalk:
 
 .PHONY: clean
 clean:
-	rm -rf *.o *.so build/
+	rm -rf *.o *.so *.csv build/
 	rm -rf Basic2D
