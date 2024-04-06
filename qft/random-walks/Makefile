@@ -3,7 +3,7 @@ IMG := lab
 
 .PHONY: all
 all: build
-	docker run -it -v $(CURDIR):/home/user $(IMG)
+	docker run -it -p 8888:8888 -v $(CURDIR):/home/jovyan/work $(IMG)
 
 
 .PHONY: build
@@ -19,5 +19,5 @@ run2dwalk:
 
 .PHONY: clean
 clean:
-	rm -rf *.0
+	rm -rf *.o *.so build/
 	rm -rf Basic2D
