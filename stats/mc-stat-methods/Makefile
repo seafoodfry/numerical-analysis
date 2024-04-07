@@ -3,7 +3,7 @@ IMG := lab #quay.io/jupyter/scipy-notebook:python-3.11
 
 .PHONY: all
 all: build
-	docker run -it -p 8888:8888 -v $(CURDIR):/home/jovyan $(IMG)
+	docker run -it -p 8888:8888 -v $(CURDIR):/home/jovyan/work $(IMG)
 
 
 .PHONY: build
