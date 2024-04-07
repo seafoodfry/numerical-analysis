@@ -28,7 +28,7 @@ class Lattice {
                          // SHOULD NOT change for wolff.
     
     double exponentials[2];
-    double totalenergy;
+    double totalEnergy;
 
     // Neighboring lattice sites.
     unsigned int nextX;
