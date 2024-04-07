@@ -59,3 +59,19 @@ bool HashTable::find(unsigned int site) {
     }
     return false;
 }
+
+void HashTable::clear() {
+    // Step 1: Delete all nodes in each list.
+    for (unsigned int i = 0; i < table.size(); i++) {
+        node* current = table[i];
+        while (current != nullptr) {
+            node* toDelete = current;
+            current = current->next;
+            delete toDelete; // Delete the node to prevent memory leaks.
+        }
+        table[i] = nullptr; // Reset the head of the list to indicate it's empty.
+    }
+
+    // Step 2: Reset the hash table's state.
+    size = 0;
+}

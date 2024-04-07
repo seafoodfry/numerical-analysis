@@ -259,13 +259,75 @@ bool Lattice::metropolis(unsigned int site) {
 void Lattice::growCluster(unsigned int site, int spin) {
     getNeighbours(site);
 
-    unsigned int currNextX = nextX;
-    unsigned int currNextY = nextY;
-    unsigned int currPrevX = prevX;
-    unsigned int currPrevY = prevY;
+    unsigned int curNextX = nextX;
+    unsigned int curNextY = nextY;
+    unsigned int curPrevX = prevX;
+    unsigned int curPrevY = prevY;
 
-    if (lattice[currPrevX] == spin && !cluster->find(currPrevX)) {
+    // TODO: the way the probability variable is iffy and should be fixed.
+    if (lattice[curPrevX] == spin && !cluster->find(curPrevX)) {
         randomU = gsl_rng_uniform(generator);
-        if (randomU < probability)
+        if (randomU < probability) {
+            cluster->insert(curPrevX);
+            growCluster(curPrevX, spin);
+        }
     }
+    if (lattice[curNextX] == spin && !cluster->find(curNextX)) {
+        randomU = gsl_rng_uniform(generator);
+        if (randomU < probability) {
+            cluster->insert(curNextX);
+            growCluster(curNextX, spin);
+        }
+    }
+    if (lattice[curPrevY] == spin && !cluster->find(curPrevY)) {
+        randomU = gsl_rng_uniform(generator);
+        if (randomU < probability) {
+            cluster->insert(curPrevY);
+            growCluster(curPrevY, spin);
+        }
+    }
+    if (lattice[curNextY] == spin && !cluster->find(curNextY)) {
+        randomU = gsl_rng_uniform(generator);
+        if (randomU < probability) {
+            cluster->insert(curNextY);
+            growCluster(curNextY, spin);
+        }
+    }
+}
+
+void Lattice::flipCluster() {
+    // Note: we rewrote this code. The original listing had a non-existent type Node.
+    // And it also mentioned bits like `cluster->table[i]->head`, where head was never implemented
+    // in the code sample for the HashTable.
+    for (unsigned int i = 0; i < 97; i++) {
+        if (cluster->table[i]->size != 0) {
+            node* temp = cluster->table[i];
+            for (unsigned int j = 0; j < cluster->table[i]->size; j++) {
+                lattice[temp->site] *= -1;
+                temp = temp->next;
+            }
+        }
+    }
+}
+
+void Lattice::flipComplement() {
+    for (unsigned int i = 0; i < latticeSize; i++) {
+        if (!cluster->find(i))
+            lattice[i] *= -1;
+    }
+}
+
+// wolff returns the size of the cluster.
+unsigned int Lattice::wolff(unsigned int site) {
+    cluster->insert(site);
+    growCluster(site, lattice[site]);
+
+    if (cluster->size >= latticeSize/2)
+        flipComplement();
+    else
+        flipCluster();
+
+    unsigned int clusterSize = cluster->size;
+    cluster->clear();
+    return clusterSize;
 }

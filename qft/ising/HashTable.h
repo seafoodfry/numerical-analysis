@@ -25,6 +25,7 @@ class HashTable {
         // Member functions.
         void insert(unsigned int site);
         bool find(unsigned int site);
+        void clear();
 
         // Member data.
         unsigned int size;
