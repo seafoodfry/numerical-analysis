@@ -194,3 +194,78 @@ void Lattice::getNeighbours(unsigned int site) {
         prevY = latticeSize - xDim;
     }
 }
+
+int Lattice::calcHalfenergy(unsigned int site) {
+    getHalfNeighbours(site);
+
+    return -lattice[site] * (lattice[nextX] + lattice[nextY]);
+}
+
+int Lattice::calcEnergy(unsigned int site) {
+    getNeighbours(site);
+
+    return -lattice[site] * (lattice[nextX] + lattice[nextY] + lattice[prevX] + lattice[prevY]);
+}
+
+double Lattice::calcTotalEnergy() {
+    totalEnergy = 0;
+    for (unsigned int i = 0; i < latticeSize; i++)
+        totalEnergy += calcHalfenergy(i);
+    return totalEnergy / latticeSize;
+}
+
+double Lattice::calcMagnetization() {
+    int magnet = 0;
+    for (unsigned int i = 0; i < latticeSize; i++)
+        magnet += lattice[i];
+    return (double)magnet / latticeSize;
+}
+
+// calcSpecificHeat takes as input the average and the squared energies per spin.
+double Lattice::calcSpecificHeat(double avgEnergy, double sqrdEnergy) {
+    double diff = sqrdEnergy - (avgEnergy * avgEnergy);
+    return beta * beta * diff * latticeSize;
+}
+
+// calcSusceptibility takes as input the average and the squared susceptibilities per spin.
+double Lattice::calcSusceptibility(double avgMagnet, double sqrdMagnet) {
+    double diff = sqrdMagnet - (avgMagnet * avgMagnet);
+    return beta * diff * latticeSize;
+}
+
+bool Lattice::metropolis(unsigned int site) {
+    // Only need to consider the change in energy at the given site that we may be flipping.
+    // This is only half the actual energy change.
+    int difference = -calcEnergy(site);
+
+    if (difference <= 0) {  // This is a lower energy state so we flip.
+        lattice[site] *= -1;
+        return true;
+    }
+
+    // Since it isn't a lower energy state, let's accept the flip based on the boltzman factor.
+    randomU = gsl_rng_uniform(generator);
+    int exp_index = (int)(difference/2) - 1;
+    probability = exponentials[exp_index];
+
+    if (randomU < probability) {
+        lattice[site] += -1;
+        return true;
+    }
+    return false;
+}
+
+// growCluster is a method used by Wolff.
+void Lattice::growCluster(unsigned int site, int spin) {
+    getNeighbours(site);
+
+    unsigned int currNextX = nextX;
+    unsigned int currNextY = nextY;
+    unsigned int currPrevX = prevX;
+    unsigned int currPrevY = prevY;
+
+    if (lattice[currPrevX] == spin && !cluster->find(currPrevX)) {
+        randomU = gsl_rng_uniform(generator);
+        if (randomU < probability)
+    }
+}

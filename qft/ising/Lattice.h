@@ -56,8 +56,8 @@ class Lattice {
     int calcEnergy(unsigned int site);
     double calcTotalEnergy();
     double calcMagnetization();
-    double calcSpecificHeat(double average, double squared);
-    double calcSusceptibility(double average, double squared);
+    double calcSpecificHeat(double avgEnergy, double squared);
+    double calcSusceptibility(double avgMagnet, double sqrdMagnet);
 
     bool metropolis(unsigned int site);  // Returns whether or not the site flipped.
     void growCluster(unsigned int site, int spin);
