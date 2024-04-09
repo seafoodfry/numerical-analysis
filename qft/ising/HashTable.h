@@ -36,4 +36,4 @@ class HashTable {
 };
 
 
-#endif _HASHTABLE_H
+#endif //_HASHTABLE_H

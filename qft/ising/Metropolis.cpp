@@ -12,7 +12,7 @@ by David Schaich
 #include <gsl/gsl_sf_log.h>  // Natural log.
 #include "Lattice.h"
 
-int main(unsigned int argc, char** const argv) {
+int main(int argc, char** const argv) {
     if (argc != 6) {
         fprintf(stderr, "Usage: %s xDim yDim init sampleSize temp\n", argv[0]);
         fflush(stderr);
@@ -75,7 +75,7 @@ int main(unsigned int argc, char** const argv) {
             sqrEnergy += (energyData[counter] * energyData[counter]);
             sqrMagnet += (magnetData[counter] * magnetData[counter]);
 
-            counter++
+            counter++;
         }
     }
 

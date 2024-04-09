@@ -94,10 +94,10 @@ void Lattice::printLattice() {
             printf("\n");
 
         if (lattice[i] == -1)
-            printf("o")
+            printf("o");
         else if (lattice[i] == 1)
             printf("x");
-        else:
+        else
             printf("ERR");
     }
     printf("\n");
@@ -110,8 +110,8 @@ void Lattice::printCluster() {
             printf("\n");
 
         if (cluster->find(i))
-            printf("x")
-        else:
+            printf("x");
+        else
             printf(" ");
     }
     printf("\n");
@@ -300,10 +300,10 @@ void Lattice::flipCluster() {
     // And it also mentioned bits like `cluster->table[i]->head`, where head was never implemented
     // in the code sample for the HashTable.
     for (unsigned int i = 0; i < 97; i++) {
-        if (cluster->table[i]->size != 0) {
+        if (cluster->table.size() != 0) {
             node* temp = cluster->table[i];
-            for (unsigned int j = 0; j < cluster->table[i]->size; j++) {
-                lattice[temp->site] *= -1;
+            for (unsigned int j = 0; j < cluster->table.size(); j++) {
+                lattice[temp->value] *= -1;
                 temp = temp->next;
             }
         }

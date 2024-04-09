@@ -22,6 +22,7 @@ running time decreased by around 20%.
 */
 #include "HashTable.h"
 #include <vector>
+#include <cstddef>  // NULL.
 
 HashTable::HashTable(unsigned int tableNumber) {
     size = 0;

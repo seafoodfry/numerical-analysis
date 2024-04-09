@@ -68,4 +68,4 @@ class Lattice {
     private:
 };
 
-#endif _LATTICE_H
+#endif // _LATTICE_H
