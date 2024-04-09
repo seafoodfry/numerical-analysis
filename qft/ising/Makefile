@@ -1,4 +1,6 @@
 IMG := ising-lab
+#CONTAINER_NTWR := --network $(IMG)
+CONTAINER_NTWR := -p 8888:8888
 
 CC := g++
 # Compiler flags:
@@ -21,11 +23,11 @@ OBJECTS = $(SOURCES:.cpp=.o)
 all: network build
 	docker run -it \
 		--security-opt=no-new-privileges \
-		--network $(IMG) \
 		--memory="2000m" \
 		--cpus="2" \
 		--ulimit nofile=100 \
 		--ulimit nproc=60 \
+		$(CONTAINER_NTWR) \
 		-v $(CURDIR):/home/jovyan/work \
 		$(IMG) bash
 
