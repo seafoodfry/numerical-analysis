@@ -3,5 +3,6 @@ Metropolis
 .bash_history
 
 *.o
-*.csv
 *.so
+*.csv
+*.txt

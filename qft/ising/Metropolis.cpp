@@ -9,12 +9,30 @@ by David Schaich
 #include <cmath>             // floor, sqrt.
 #include <cstdio>            // printf.
 #include <cstdlib>           // atoi.
+#include <fstream>
+#include <iostream>          // cerr.
 #include <gsl/gsl_sf_log.h>  // Natural log.
 #include "Lattice.h"
 
+
+void writeArrayToTextFile(const double* array, size_t size, const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for writing: " << filename << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+        file << array[i] << "\n";
+    }
+
+    file.close();
+}
+
+
 int main(int argc, char** const argv) {
-    if (argc != 6) {
-        fprintf(stderr, "Usage: %s xDim yDim init sampleSize temp\n", argv[0]);
+    if (argc != 7) {
+        fprintf(stderr, "Usage: %s xDim yDim init sampleSize temp autocorrelation.txt\n", argv[0]);
         fflush(stderr);
         exit(1);
     }
@@ -24,6 +42,7 @@ int main(int argc, char** const argv) {
     unsigned int init = atoi(argv[3]);        // Number of equilibrium steps.
     unsigned int sampleSize = atoi(argv[4]);  // Number of iterations for statistics.
     unsigned int RNSeed = atoi(argv[5]);      // 100x temperature (kT but in natural units).
+    std::string autocorFile = argv[6];        // Name of text file in which to store the autocorrelation values.
 
     float temp = (float)RNSeed / 100;
 
@@ -114,6 +133,10 @@ int main(int argc, char** const argv) {
         autocorrelation[t] /= scaleFactor;  // Scale by Chi[0].
     }
 
+    // Save the autocorrelation time series.
+    writeArrayToTextFile(autocorrelation, sampleSize, autocorFile);
+
+
     // Generate autocorrelation times from autocorrelation function.
     double autocorTime = 0.0;
     double tempd;
@@ -145,7 +168,7 @@ int main(int argc, char** const argv) {
         magnetStdDev = sqrt(magnetStdDev);
     }
 
-    printf("%d,%d,%d,%d,%d", xDim, yDim, init, sampleSize, RNSeed);
+    printf("%d,%d,%d,%d,%d,", xDim, yDim, init, sampleSize, RNSeed);
     printf("%f,%lf,", temp, autocorTime);
     printf("%lf,%lf,", avgEnergy, energyStdDev);
     printf("%lf,%lf,", AvgMagnetAbs, magnetStdDev);
