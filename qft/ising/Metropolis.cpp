@@ -56,13 +56,13 @@ int main(int argc, char** const argv) {
 
     // Take data every 5 sweeps (somewhat arbitrary value based on checking out the 
     // autocorrelation times).
-    // TODO: elaborate on what and why.
+    // TODO: elaborate on what and why. Evaluate how the critical slowing down is affected by this
+    // parameter.
     unsigned int counter = 0;
     for (unsigned int i = 0; i < sampleSize * latticeSize * 5; i++) {
         randomSite = (int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
         lattice->metropolis(randomSite);
 
-        // TODO: this if can be simplified to just i % 5 = 0.
         if (i % (latticeSize*5) == 0) {
             energyData[counter] = lattice->calcTotalEnergy();
             avgEnergy += energyData[counter];

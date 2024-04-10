@@ -66,6 +66,8 @@ class Lattice {
     unsigned int wolff(unsigned int site);
 
     private:
+    // Making this to avoid bugs where we confuse a '*' for a '+' or any other sort of operator.
+    unsigned int flipped(unsigned int site);
 };
 
 #endif // _LATTICE_H

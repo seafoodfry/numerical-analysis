@@ -7,6 +7,8 @@ by David Schaich
 */
 #include "Lattice.h"
 #include <cstdio>    // For fflush and stdout.
+#include <stdexcept> // For std::runtime_error
+#include <string>    // For std::to_string()
 
 
 Lattice::Lattice(unsigned int x, unsigned int y, unsigned int RNSeed) {
@@ -195,6 +197,8 @@ void Lattice::getNeighbours(unsigned int site) {
     }
 }
 
+// calcHalfenergy only counts half the interactions in the model because its used by calcTotalenergy
+// so we do half to avoid double counting interactions.
 int Lattice::calcHalfenergy(unsigned int site) {
     getHalfNeighbours(site);
 
@@ -233,23 +237,71 @@ double Lattice::calcSusceptibility(double avgMagnet, double sqrdMagnet) {
     return beta * diff * latticeSize;
 }
 
-bool Lattice::metropolis(unsigned int site) {
-    // Only need to consider the change in energy at the given site that we may be flipping.
-    // This is only half the actual energy change.
-    int difference = -calcEnergy(site);
+unsigned int Lattice::flipped(unsigned int site) {
+    unsigned int spin = lattice[site];
+    // A spin should never be anything other than +1 or -1.
+    if (spin != 1 && spin != -1) {
+        throw std::runtime_error("Lattice integrity violation at index " + std::to_string(site) + ", the spin was: " + std::to_string(spin));
+    }
+    return -spin;
+}
 
-    if (difference <= 0) {  // This is a lower energy state so we flip.
-        lattice[site] *= -1;
+/* metropolis performs a metropolis step
+
+Note that there are 5 possible initial states (see the accompanying notebook for a
+more detailed exaplanation), and in those 5 possible initial states, 3 represent a spin
+being flipped and an end state with a lower energy which will be accepted.
+So we just need to identify the initial states that correspond in a metropolis state that will absolutely be
+accepted, and only compute the boltzmann facotr for the probabilistic acceptance of the 2 other
+states which take the system to a higher energy state.
+
+The 2 states that result in a the system's energy increasing are:
+                  u                       u
+    E = -4J     u u u       -> E = 4J   u d u
+                  u                       u
+    \Delta E = 4J - -4J = 8J
+    -\beta \Delta E = -beta 8J
+
+                  u                       u
+    E = -2J     d u u       -> E = 2J   d d u
+                  u                       u
+    \Delta E = 2J - -2J = 4J
+    -\beta \Delta E = -beta 4J
+
+Note that the initial energy is negative for these 2 states - the energies for the states that
+are always accepted is 0J -> 0J, 2J -> -2J, and 4J -> -4J.
+*/
+bool Lattice::metropolis(unsigned int site) {
+    // Performance obten makes us skip steps, but something that can prevent a million erroneous
+    // runs is a great time-saving investment.
+    if (lattice[site] != 1 && lattice[site] != -1) {
+        throw std::runtime_error("Lattice integrity violation at index " + std::to_string(site) + ", the spin was: " + std::to_string(lattice[site]));
+    }
+
+
+    // This result of calcEnergy is only the initial energy. Reemember that we can tell from the
+    // initial/current energy of the state whether the transition will be accepted or whether it will
+    // be probabilistically accepted: only the initial states with energy -4J and -2J require us to compute
+    // their Boltzmann factors for a probabilistic acceptance.
+    // Hence, we are converting the computed current energy to obtain the "final" energy.
+    // That way we can use a slightly easier to read logic...
+    int finalE = -calcEnergy(site);
+
+    // The three possible transition where we go from a state of higher energy to a lower one
+    // correspond to states where the final energy is 0J, -2J, or -4J.
+    // So if the computed finalE matches any of these values we accept the energy "step down".
+    if (finalE <= 0) {  // This is a lower energy state so we flip.
+        lattice[site] = flipped(site);
         return true;
     }
 
-    // Since it isn't a lower energy state, let's accept the flip based on the boltzman factor.
+    // Since it isn't a lower energy state, let's accept the flip based on the Boltzman factor.
     randomU = gsl_rng_uniform(generator);
-    int exp_index = (int)(difference/2) - 1;
+    // The value at 0 is the Boltzmann factor -4beta, the next one is -8beta.
+    int exp_index = (int)(finalE/2) - 1;
     probability = exponentials[exp_index];
-
     if (randomU < probability) {
-        lattice[site] += -1;
+        lattice[site] = flipped(site);
         return true;
     }
     return false;
