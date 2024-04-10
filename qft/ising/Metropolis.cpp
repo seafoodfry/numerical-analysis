@@ -40,11 +40,7 @@ int main(int argc, char** const argv) {
 
     double energyData[sampleSize];
     double magnetData[sampleSize];
-    double autocorrelation[sampleSize];
-    double scaleFactor = 0.0;
-    double autocorTime = 0.0;
-    double energyStdDev = 0.0;
-    double magnetStdDev = 0.0;
+    
 
     Lattice* lattice = new Lattice(xDim, xDim, RNSeed);
 
@@ -96,16 +92,18 @@ int main(int argc, char** const argv) {
     // Now its time for some autocorrelation and standard deviation madness.
     // Use magnetization for autocorrelation time calculation.
     // Should be roughly the same for all variables.
-    // Generate Chi[0] for scaling purposes.
+    // Generate Chi[0] (the scale factor) for scaling purposes.
+    double scaleFactor = 0.0;
     for (unsigned int i = 0; i < sampleSize; i++) {
         scaleFactor += (magnetData[i] * magnetData[i]);
     }
     scaleFactor /= sampleSize;
     scaleFactor -= (AvgMagnetAbs * AvgMagnetAbs);
 
-    autocorrelation[0] = 1.0;
 
     // Calculate autocorrelation function, Chi[0], t > 0.
+    double autocorrelation[sampleSize];
+    autocorrelation[0] = 1.0;
     for (unsigned int t = 1; t < sampleSize; t++) {
         autocorrelation[t] = 0.0;
         for (unsigned int i = 0; i < sampleSize - t; i++) {
@@ -117,6 +115,7 @@ int main(int argc, char** const argv) {
     }
 
     // Generate autocorrelation times from autocorrelation function.
+    double autocorTime = 0.0;
     double tempd;
     unsigned int i = 1;
     while (autocorrelation[i] > 0 && autocorrelation[i] < autocorrelation[i-1] && i < sampleSize) {
@@ -129,6 +128,8 @@ int main(int argc, char** const argv) {
 
     // Use standard formula to generate standard deviations from autocorrelation time,
     // average, sampleSize, etc.
+    double energyStdDev = 0.0;
+    double magnetStdDev = 0.0;
     if (i == 1) {  // Assume autocorrelation tiem is 0.
         autocorTime = 0.0;
         energyStdDev = 0.0;
@@ -144,11 +145,12 @@ int main(int argc, char** const argv) {
         magnetStdDev = sqrt(magnetStdDev);
     }
 
-    printf("%f\t%lf\t", temp, autocorTime);
-    printf("%lf\t%lf\t", avgEnergy, energyStdDev);
-    printf("%lf\t%lf\t", AvgMagnetAbs, magnetStdDev);
-    printf("%lf\t%lf\t", specificHeat, susceptibility);
-    printf("%lf\t%lf\n", avgMagnet, scaleFactor);
+    printf("%d,%d,%d,%d,%d", xDim, yDim, init, sampleSize, RNSeed);
+    printf("%f,%lf,", temp, autocorTime);
+    printf("%lf,%lf,", avgEnergy, energyStdDev);
+    printf("%lf,%lf,", AvgMagnetAbs, magnetStdDev);
+    printf("%lf,%lf,", specificHeat, susceptibility);
+    printf("%lf,%lf\n", avgMagnet, scaleFactor);
 
     return 0;
 }
