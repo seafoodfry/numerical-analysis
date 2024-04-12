@@ -2,7 +2,7 @@ FROM quay.io/jupyter/scipy-notebook:python-3.11
 
 WORKDIR /tmp
 
-copy gsl_key.txt .
+copy deps/gsl_key.txt .
 
 USER root
 
@@ -42,7 +42,7 @@ USER $NB_UID
 #ENV PATH=/opt/venv/bin:$PATH
 ENV PATH=$PATH:/home/user/.local/bin
 
-COPY requirements.txt .
+COPY deps/requirements.txt .
 RUN . /etc/profile.d/bash_completion.sh && \
     pip install -Ur requirements.txt
 

@@ -57,7 +57,10 @@ network:
 	docker network list
 
 .PHONY: clean
-clean:
-	rm -f *.o
+clean: clean-data
 	docker network rm $(IMG)
 
+
+.PHONY: clean-data
+clean-data:
+	rm -rf *.o *.txt *.csv

@@ -72,7 +72,7 @@ int main(int argc, char** const argv) {
         randomSite = (int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
         lattice->metropolis(randomSite);
 
-        if (snapFrequency > 0 && i%(latticeSize * snapFrequency) == 0) {
+        if (snapFrequency > 0 && i%snapFrequency == 0) {
             std::string filename = snapshotPrefix + "-equil-" + std::to_string(i/latticeSize) + ".txt";
             lattice->saveLatticeToFile(dirPath, filename);
         }
