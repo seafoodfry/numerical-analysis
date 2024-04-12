@@ -11,6 +11,7 @@ by David Schaich
 #include <cstdlib>           // atoi.
 #include <fstream>
 #include <iostream>          // cerr.
+#include <filesystem>        // filesystem::path.
 #include <gsl/gsl_sf_log.h>  // Natural log.
 #include "Lattice.h"
 
@@ -18,7 +19,7 @@ by David Schaich
 void writeArrayToTextFile(const double* array, size_t size, const std::string& filename) {
     std::ofstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Failed to open file for writing: " << filename << std::endl;
+        throw std::runtime_error("Failed to open file for writing: " + filename);;
         return;
     }
 
@@ -31,18 +32,21 @@ void writeArrayToTextFile(const double* array, size_t size, const std::string& f
 
 
 int main(int argc, char** const argv) {
-    if (argc != 7) {
-        fprintf(stderr, "Usage: %s xDim yDim init sampleSize temp autocorrelation.txt\n", argv[0]);
+    if (argc != 10) {
+        fprintf(stderr, "Usage: %s xDim yDim init sampleSize temp autocorrelation.txt dir-lattice-snaptshots snapshot-prefix 10\n", argv[0]);
         fflush(stderr);
         exit(1);
     }
 
-    unsigned int xDim = atoi(argv[1]);        // Lattice size in the x dimension.
-    unsigned int yDim = atoi(argv[2]);        // Lattice size in the y dimention.
-    unsigned int init = atoi(argv[3]);        // Number of equilibrium steps.
-    unsigned int sampleSize = atoi(argv[4]);  // Number of iterations for statistics.
-    unsigned int RNSeed = atoi(argv[5]);      // 100x temperature (kT but in natural units).
-    std::string autocorFile = argv[6];        // Name of text file in which to store the autocorrelation values.
+    unsigned int xDim = atoi(argv[1]);           // Lattice size in the x dimension.
+    unsigned int yDim = atoi(argv[2]);           // Lattice size in the y dimention.
+    unsigned int init = atoi(argv[3]);           // Number of equilibrium steps.
+    unsigned int sampleSize = atoi(argv[4]);     // Number of iterations for statistics.
+    unsigned int RNSeed = atoi(argv[5]);         // 100x temperature (kT but in natural units).
+    std::string autocorFile = argv[6];           // Name of text file in which to store the autocorrelation values.
+    std::filesystem::path dirPath = argv[7];     // Path where to store snaptshots.
+    std::string snapshotPrefix = argv[8];        // Prefix for the snaptshots.
+    unsigned int snapFrequency = atoi(argv[9]);  // Frequency with which to store snapshots.
 
     float temp = (float)RNSeed / 100;
 
@@ -67,6 +71,11 @@ int main(int argc, char** const argv) {
     for (unsigned int i = 0; i < init*latticeSize; i++) {
         randomSite = (int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
         lattice->metropolis(randomSite);
+
+        if (snapFrequency > 0 && i%(latticeSize * snapFrequency) == 0) {
+            std::string filename = snapshotPrefix + "-equil-" + std::to_string(i/latticeSize) + ".txt";
+            lattice->saveLatticeToFile(dirPath, filename);
+        }
     }
 
     // Take data every 5 sweeps (somewhat arbitrary value based on checking out the 

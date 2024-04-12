@@ -10,8 +10,10 @@ by David Schaich
 
 #include "HashTable.h"
 #include <vector>
+#include <filesystem>        // filesystem::path.
 #include <gsl/gsl_rng.h>     // Random number generators.
 #include <gsl/gsl_sf_exp.h>  // Exponential functions.
+
 
 class Lattice {
     public:
@@ -46,6 +48,7 @@ class Lattice {
     ~Lattice();
 
     void printLattice();
+    void saveLatticeToFile(const std::filesystem::path& dirPath, const std::string& filename);
     void printCluster();
 
     // Periodicboundary conditions.

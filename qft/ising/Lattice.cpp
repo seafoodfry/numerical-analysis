@@ -9,6 +9,9 @@ by David Schaich
 #include <cstdio>    // For fflush and stdout.
 #include <stdexcept> // For std::runtime_error
 #include <string>    // For std::to_string()
+#include <fstream>
+#include <iostream>
+#include <filesystem>
 
 
 Lattice::Lattice(unsigned int x, unsigned int y, unsigned int RNSeed) {
@@ -32,7 +35,7 @@ Lattice::Lattice(unsigned int x, unsigned int y, unsigned int RNSeed) {
     // This is also different from the code in the thesis.
     for (unsigned int i = 0; i < latticeSize; i++) {
         if (gsl_rng_uniform(generator) < 0.5) {
-            lattice.push_back(-1);
+            lattice[i] = -1;
         }
     }
 
@@ -100,10 +103,32 @@ void Lattice::printLattice() {
         else if (lattice[i] == 1)
             printf("x");
         else
-            printf("ERR");
+            throw std::runtime_error("Lattice integrity violation at index " + std::to_string(i) + ", the spin was: " + std::to_string(lattice[i]));
     }
     printf("\n");
     fflush(stdout);
+}
+
+void Lattice::saveLatticeToFile(const std::filesystem::path& dirPath, const std::string& filename) {
+    std::filesystem::path fullPath = dirPath / filename;
+    std::ofstream file(fullPath);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open file for writing: " + fullPath.string());
+    }
+
+    for (unsigned int i = 0; i < latticeSize; i++) {
+        if (i % xDim == 0)
+            file << "\n";
+
+        if (lattice[i] == -1)
+            file << "o";
+        else if (lattice[i] == 1)
+            file << "x";
+        else
+            throw std::runtime_error("Lattice integrity violation at index " + std::to_string(i) + ", the spin was: " + std::to_string(lattice[i]));
+    }
+    file << "\n";
+    file.close();
 }
 
 void Lattice::printCluster() {
