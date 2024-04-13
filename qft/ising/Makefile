@@ -24,7 +24,7 @@ all: network build
 	docker run -it \
 		--security-opt=no-new-privileges \
 		--memory="2000m" \
-		--cpus="2" \
+		--cpus="3" \
 		--ulimit nofile=100 \
 		--ulimit nproc=60 \
 		$(CONTAINER_NTWR) \
