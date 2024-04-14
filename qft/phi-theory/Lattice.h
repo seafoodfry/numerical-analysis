@@ -44,19 +44,21 @@ class Lattice {
         void printSigns();
         void printClusters();
 
-        void getNeighbours(unsigned int site, siteNeighbours* toInit);
+        void getHelicalNeighbours(unsigned int site, siteNeighbours* toInit);
 
         double calcTotalEnergy();
         double calcAvgPhi();
 
         void metropolis(unsigned int site);
+        
         bool clusterCheck(unsigned int site, unsigned int toAdd);
-
         void growClusterPos(unsigned int site);
         void growClusterNeg(unsigned int site);
         void flipCluster();
         unsigned int wolff(unsigned int site);  // Returns cluster size.
+
     private:
+        double genRandomPhi();
 };
 
 

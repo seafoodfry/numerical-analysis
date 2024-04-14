@@ -202,10 +202,13 @@ void Lattice::getHalfNeighbours(unsigned int site) {
 // getNeighbours relies on getHalfneighbours to figure out the next X and Y positions
 // using helical boundary conditions. This function then just focuses on the previous
 // X and Y positions.
+// Note: also note that this snippet reveals a bug in the Ising model code snippet,
+// as the first if statement for determining prevX and prevY should have the conditional
+// (site >= xDim), instead of (site > xDim).
 void Lattice::getNeighbours(unsigned int site) {
     getHalfNeighbours(site);
 
-    if (site > xDim) {  // If site is below the 1st row...
+    if (site >= xDim) {  // If site is below the 1st row...
         // Then the prev X is just 1 to the left, and xDim to the top.
         prevX = site - 1;
         prevY = site - xDim;
