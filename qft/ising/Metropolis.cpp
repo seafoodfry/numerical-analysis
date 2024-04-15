@@ -169,7 +169,7 @@ int main(int argc, char** const argv) {
     } else {
         autocorTime /= (i - 1);
         energyStdDev = 2 * autocorTime / sampleSize;
-        energyStdDev += sqrEnergy - (avgEnergy * avgEnergy);
+        energyStdDev *= sqrEnergy - (avgEnergy * avgEnergy);
         energyStdDev = sqrt(energyStdDev);
 
         magnetStdDev = 2 * autocorTime / sampleSize;
