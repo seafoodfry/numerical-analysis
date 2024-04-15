@@ -46,4 +46,6 @@ COPY deps/requirements.txt .
 RUN . /etc/profile.d/bash_completion.sh && \
     pip install -Ur requirements.txt
 
-COPY *.cpp *.h .
+COPY Makefile *.cpp *.h .
+
+RUN make Metropolis
