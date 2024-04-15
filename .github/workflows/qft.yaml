@@ -5,10 +5,12 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    working-directory: qft/ising/
+    defaults:
+      run:
+        working-directory: qft/ising/
     steps:
       - uses: actions/checkout@v3
       - name: Build Image
         run: make build IMG=ci
-      - name: Build Source
+      - name: Test Binary
         run: docker run ci /home/jovyan/work/Metropolis 32 32 1000 1000 220 autocor.txt /tmp snaps 100
