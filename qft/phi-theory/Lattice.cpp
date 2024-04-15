@@ -13,7 +13,7 @@ by David Schaich
 
 
 Lattice::Lattice(double mu, double lambda, unsigned int xDim, unsigned int yDim) {
-    generator = gsl_rng_alloc(gsl_rng_mt199337);  // Mersenne Twiseter.
+    generator = gsl_rng_alloc(gsl_rng_mt19937);  // Mersenne Twiseter.
     gsl_rng_set(generator, (unsigned int)(100 * mu * lambda));
 
     muSquared = 2 + (mu / 2);
@@ -44,7 +44,7 @@ Lattice::~Lattice() {}
 
 // genRandomPhi generates values in the range [-1.5, 1.5) uniformly.
 double Lattice::genRandomPhi() {
-    return 3 * gsl_rng_uniform(generator) - 1.5
+    return 3 * gsl_rng_uniform(generator) - 1.5;
 }
 
 // getHelicalNeighbours computes the neighbours for the given site and stores them
@@ -108,7 +108,7 @@ void Lattice::printSigns() {
         if (lattice[i] >= 0) {
             printf(" ");
         } else {
-            printf("x")
+            printf("x");
         }
     }
     printf("\n");
@@ -136,7 +136,7 @@ double Lattice::calcTotalEnergy() {
     for (unsigned int i = 0; i < latticeSize; i++) {
         currentPhi = lattice[i];
 
-        totalEnergy -= currentPhi * (lattices[neighbours[i]->nextX] + lattice[neighbours[i]->nextY]);
+        totalEnergy -= currentPhi * (lattice[neighbours[i]->nextX] + lattice[neighbours[i]->nextY]);
         
         currentPhi *= currentPhi;
         totalEnergy += muSquared * currentPhi;
@@ -156,14 +156,14 @@ double Lattice::calcAvgPhi() {
 }
 
 void Lattice::metropolis(unsigned int site) {
-    double currentPhi = lattice[i];
+    double currentPhi = lattice[site];
     double newValue = genRandomPhi();
     double tmp = newValue;
 
     // Compute energy difference.
     double difference = (currentPhi - newValue)
-        * (lattice[neighbours[i]->nextX + lattice[neighbours[i]->nextY]
-        +  lattice[neighbours[i]->prevX  + lattice[neighbours[i]->prevtY );
+        * (lattice[neighbours[site]->nextX] + lattice[neighbours[site]->nextY]
+        +  lattice[neighbours[site]->prevX]  + lattice[neighbours[site]->prevY] );
 
     newValue *= newValue;
     currentPhi *= currentPhi;

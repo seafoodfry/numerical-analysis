@@ -11,7 +11,7 @@ CC := g++
 CFLAGS := -g -O2 -Wall -Wextra -Werror -std=gnu++latest # std=c++20 -std=c++17 -std=c++14 -std=c++11
 LFLAGS := -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lgsl -lgslcblas -lm
 
-TARGET = Metropolis
+TARGET = Simulation
 SOURCES = $(wildcard *.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 

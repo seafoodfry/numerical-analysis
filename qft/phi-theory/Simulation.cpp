@@ -45,7 +45,7 @@ struct AutocorrelationResults {
     double scaleFactor;
 
     // Explicit constructor.
-    AutocorrelationResults(unsigned int t, double time, double scale) : iteration(t), autocorTime(time), scaleFactor(scale) {}
+    //AutocorrelationResults(unsigned int t, double time, double scale) : iteration(t), autocorTime(time), scaleFactor(scale) {}
 };
 
 // caclAutocorTime requires that we create the autocorrelation arrary beforehand.
@@ -145,7 +145,7 @@ std::unique_ptr<const BinningResults> calcBimodality(unsigned int bins,  int sam
 }
 
 
-int main(int argc, cahr** const argv) {
+int main(int argc, char** const argv) {
     if (argc != 7) {
         std::cerr << "Usage: " << argv[0] << " muSqrd lambda xDim yDim init sampleSize" << std::endl;
         std::exit(EXIT_FAILURE);  // Use EXIT_FAILURE for portability.
@@ -155,7 +155,7 @@ int main(int argc, cahr** const argv) {
     double lambda = atof(argv[2]) / 100;      // Coupling strenght.
     unsigned int xDim = atoi(argv[3]);
     unsigned int yDim = atoi(argv[4]);
-    unsigned int init atoi(argv[5]);          // Iterations for equilibration.
+    unsigned int init = atoi(argv[5]);         // Iterations for equilibration.
     unsigned int sampleSize = atoi(argv[6]);
 
     unsigned int latticeSize = xDim * yDim;
@@ -163,7 +163,7 @@ int main(int argc, cahr** const argv) {
     double phiData[sampleSize];
     double phiDataAbs[sampleSize];
 
-    Lattice* lattice = new Lattice(muSqrd, lambda, xDimm yDim);
+    Lattice* lattice = new Lattice(muSqrd, lambda, xDim, yDim);
 
     // Initialize and equilibrate the lattice.
     // Do gap metropolis steps for each lattice site, then a wolff step.
@@ -196,7 +196,7 @@ int main(int argc, cahr** const argv) {
         avgPhi += phiData[i];
         avgPhiAbs += phiDataAbs[i];
         if (phiDataAbs[i] > maxPhi) {
-            maxPhi = phiDataAbs[i]
+            maxPhi = phiDataAbs[i];
         }
 
         sqrdEnergy += (energyData[i] * energyData[i]);
@@ -229,7 +229,7 @@ int main(int argc, cahr** const argv) {
     } else {
         autocorTime /= (autocorTResults->iteration - 1);
         energyStdDev = 2 * autocorTime / sampleSize;
-        energyStdDev *= sqrEnergy - (avgEnergy * avgEnergy);
+        energyStdDev *= sqrdEnergy - (avgEnergy * avgEnergy);
         energyStdDev = sqrt(energyStdDev);
 
         phiStdDev = 2 * autocorTime / sampleSize;
@@ -243,7 +243,7 @@ int main(int argc, cahr** const argv) {
 
     std::cout.precision(6);       // Set precision to 3 decimal places.
     std::cout << std::fixed;      // Ensures fixed-point notation.
-    std::cout << muSqrd << "," << lambda << ",", << autocorTime << ",";
+    std::cout << muSqrd << "," << lambda << "," << autocorTime << ",";
     std::cout << avgEnergy << "," << energyStdDev << ",";
     std::cout << avgPhiAbs << "," << phiStdDev << ",";
     std::cout << specificHeat << "," << susceptibility << ",";
