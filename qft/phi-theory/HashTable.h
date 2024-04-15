@@ -20,7 +20,7 @@ class HashTable {
     public:
         HashTable(unsigned int tableNumber);
         HashTable();
-        ~HashTable();
+        ~HashTable() = default;
 
         // Member functions.
         void insert(unsigned int site);

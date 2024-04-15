@@ -24,7 +24,7 @@ running time decreased by around 20%.
 #include <vector>
 #include <cstddef>  // NULL.
 
-HashTable::HashTable(unsigned int tableNumber) {
+HashTable::HashTable(unsigned int tableNum) : tableNumber(tableNum) {
     size = 0;
     std::vector<node*>* temp = new std::vector<node*>(tableNumber, NULL);
     table = *temp;
@@ -34,8 +34,6 @@ HashTable::HashTable(unsigned int tableNumber) {
 HashTable::HashTable() {
     HashTable(4093);
 }
-
-HashTable::~HashTable() {}
 
 void HashTable::insert(unsigned int site) {
     size++;
