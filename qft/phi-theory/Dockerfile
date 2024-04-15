@@ -25,7 +25,8 @@ RUN cd gsl-2.7 && \
 WORKDIR /home/jovyan/work
 
 RUN apt-get update -y && \
-    apt-get install bash-completion -y #&& \
+    apt-get install bash-completion -y && \
+    apt-get install gdb -y
 #    python3 -m venv /opt/venv
 #ENV PATH=/opt/venv/bin:$PATH
 

@@ -5,46 +5,49 @@ This is based on https://inspirehep.net/literature/1386200 ,
 Lattice Simulations of Nonperturbative Quantum Field Theories
 by David Schaich
 */
+#include <cmath>             // floor.
 #include "HashTable.h"
 #include "Lattice.h"
 #include <cstdio>            // For fflush and stdout.
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_sf_exp.h>  // Exp.
 
+#include <iostream>
 
-Lattice::Lattice(double mu, double lambda, unsigned int xDim, unsigned int yDim) {
-    generator = gsl_rng_alloc(gsl_rng_mt19937);  // Mersenne Twiseter.
-    gsl_rng_set(generator, (unsigned int)(100 * mu * lambda));
 
-    muSquared = 2 + (mu / 2);
-    lambda = 1/4;
+Lattice::Lattice(double m, double l, unsigned int x, unsigned int y)
+    : muSquared(2 + (m / 2.0)), lambda(l / 4.0),
+      xDim(x), yDim(y), 
+      latticeSize(xDim * yDim),
+      lattice(latticeSize, 0),
+      generator(gsl_rng_alloc(gsl_rng_mt19937), gsl_rng_free),
+      neighbours(latticeSize),
+      cluster(std::make_unique<HashTable>(latticeSize / 4)) {
 
-    xDim = xDim;
-    yDim = yDim;
-    latticeSize = xDim * yDim;
-    cluster = new HashTable(latticeSize / 4);
+    gsl_rng_set(generator.get(), static_cast<unsigned int>(100 * m * lambda));
 
-    // Initialize the lattice with values [-1.5, 1.5).
-    lattice = std::vector<double>(latticeSize, 0);
-    for (unsigned int i = 0; i < latticeSize; i++) {
+    for (unsigned int i = 0; i < latticeSize; ++i) {
+        // Initialize the lattice with values [-1.5, 1.5).
         lattice[i] = genRandomPhi();
-    }
 
-    // Initialize the neighbours vector. Calculate one siteNeighbours for each
-    // site.
-    neighbours = std::vector<siteNeighbours*>(latticeSize, NULL);
-    for (unsigned int i = 0; i < latticeSize; i++) {
-        siteNeighbours* tmp = new siteNeighbours;
-        getHelicalNeighbours(i, tmp);
-        neighbours[i] = tmp;
+        // Initialize the neighbours vector. Calculate one siteNeighbours for each site.
+        neighbours[i] = std::make_unique<siteNeighbours>();
+        getHelicalNeighbours(i, neighbours[i].get());
     }
 }
 
-Lattice::~Lattice() {}
+
+double Lattice::genU() {
+    return gsl_rng_uniform(generator.get());
+}
+
+unsigned int Lattice::getRandomSite() {
+    return (unsigned int) floor(latticeSize * genU());
+}
 
 // genRandomPhi generates values in the range [-1.5, 1.5) uniformly.
 double Lattice::genRandomPhi() {
-    return 3 * gsl_rng_uniform(generator) - 1.5;
+    return 3 * genU() - 1.5;
 }
 
 // getHelicalNeighbours computes the neighbours for the given site and stores them
@@ -161,9 +164,10 @@ void Lattice::metropolis(unsigned int site) {
     double tmp = newValue;
 
     // Compute energy difference.
+    siteNeighbours* curr = neighbours[site].get();
     double difference = (currentPhi - newValue)
-        * (lattice[neighbours[site]->nextX] + lattice[neighbours[site]->nextY]
-        +  lattice[neighbours[site]->prevX]  + lattice[neighbours[site]->prevY] );
+        * (lattice[curr->nextX] + lattice[curr->nextY]
+        +  lattice[curr->prevX] + lattice[curr->prevY] );
 
     newValue *= newValue;
     currentPhi *= currentPhi;
@@ -176,7 +180,7 @@ void Lattice::metropolis(unsigned int site) {
     // Flip if difference is negative, otherwise accept probabilistically.
     if (difference <= 0) {
         lattice[site] = tmp;
-    } else if (gsl_rng_uniform(generator) < gsl_sf_exp(-difference)) {
+    } else if (genU() < gsl_sf_exp(-difference)) {
         lattice[site] = tmp;
     }
 }
@@ -188,7 +192,7 @@ bool Lattice::clusterCheck(unsigned int site, unsigned int toAdd) {
     }
 
     double probability = 1 - gsl_sf_exp(-2 * lattice[site] * lattice[toAdd]);
-    if (gsl_rng_uniform(generator) < probability) {
+    if (genU() < probability) {
         cluster->insert(toAdd);
         return true;
     }

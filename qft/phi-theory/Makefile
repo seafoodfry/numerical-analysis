@@ -8,7 +8,7 @@ CC := g++
 # -Wall turns on most compiler warnings
 # -Wextra https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wextra
 # -Werror Make all warnings into errors. 
-CFLAGS := -g -O2 -Wall -Wextra -Werror -std=gnu++latest # std=c++20 -std=c++17 -std=c++14 -std=c++11
+CFLAGS := -g -O2 -Wall -Wextra -Wshadow -Werror -std=c++20 #-std=gnu++latest # std=c++20 -std=c++17 -std=c++14 -std=c++11
 LFLAGS := -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lgsl -lgslcblas -lm
 
 TARGET = Simulation
@@ -35,10 +35,6 @@ all: network build
 build:
 	docker build -t $(IMG) .
 
-.PHONY: compile
-compile:
-	$(CC) $(CFLAGS) -c HashTable.cpp
-
 # Rule to link the program.
 $(TARGET): $(OBJECTS)
 	$(CC) -o $(TARGET) $(OBJECTS) $(LFLAGS)
@@ -48,7 +44,7 @@ $(TARGET): $(OBJECTS)
 # the -o $@ says to put the output of the compilation in the file named on the left side of the :,
 # the $< is the first item in the dependencies list, and CXXFLAGS are the flags passed to the compiler.
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) -c $< -o $@
 
 
 .PHONY: network

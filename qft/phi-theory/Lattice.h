@@ -10,6 +10,7 @@ by David Schaich
 
 #include "HashTable.h"
 #include <vector>
+#include <memory>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_sf_exp.h>
 
@@ -24,27 +25,12 @@ struct siteNeighbours {
 
 class Lattice {
     public:
-        std::vector<double> lattice;
-        unsigned int xDim;
-        unsigned int yDim;
-        unsigned int latticeSize;
-
-        double muSquared;  // Mass of particles.
-        double lambda;     // Coupling strenght.
-
-        std::vector<siteNeighbours*> neighbours;
-        HashTable* cluster;
-
-        gsl_rng* generator;
-
         Lattice(double mu, double lambda, unsigned int x, unsigned int y);
-        ~Lattice();
+        ~Lattice() = default; // Destructor is no longer required to delete cluster.
 
         void printLattice();
         void printSigns();
         void printClusters();
-
-        void getHelicalNeighbours(unsigned int site, siteNeighbours* toInit);
 
         double calcTotalEnergy();
         double calcAvgPhi();
@@ -57,8 +43,26 @@ class Lattice {
         void flipCluster();
         unsigned int wolff(unsigned int site);  // Returns cluster size.
 
+        unsigned int getRandomSite();
+
     private:
+        double muSquared;
+        double lambda;
+        unsigned int xDim;
+        unsigned int yDim;
+        unsigned int latticeSize;
+        std::vector<double> lattice;
+
+        // Simple version: gsl_rng* generator;
+        std::unique_ptr<gsl_rng, decltype(&gsl_rng_free)> generator;
+        // Simple version is: std::vector<siteNeighbours*> neighbours;
+        std::vector<std::unique_ptr<siteNeighbours>> neighbours;
+        // Simple version: HashTable* cluster;
+        std::unique_ptr<HashTable> cluster;
+
+        double genU();
         double genRandomPhi();
+        void getHelicalNeighbours(unsigned int site, siteNeighbours* toInit);
 };
 
 

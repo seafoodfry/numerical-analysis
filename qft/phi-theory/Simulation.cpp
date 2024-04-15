@@ -16,27 +16,6 @@ by David Schaich
 #include <gsl/gsl_math.h>    // Power.
 
 
-double avgEnergy      = 0;
-double avgPhi         = 0;
-double avgPhiAbs      = 0;
-double sqrdEnergy     = 0;
-double sqrdPhi        = 0;
-double quartPhi       = 0;
-double specificHeat   = 0;
-double susceptibility = 0;
-double energyStdDev   = 0;
-double phiStdDev      = 0;
-
-static const unsigned int bins = 21;
-//unsigned int counts[bins];
-//double maxPhi     = 0;
-//double midCounts  = 0;
-//double maxCounts  = 0;
-//double bimodality = 0;
-
-//double scaleFactor = 0;
-//double autocorTime = 0;
-
 
 // AutocorrelationTime stores the computed iteration and autocorrelation time.
 struct AutocorrelationResults {
@@ -79,7 +58,6 @@ std::unique_ptr<const AutocorrelationResults> caclAutocorTime(
         autocorrelation[t] /= scaleFactor;  // Scale by Chi[0].
 
         // Now compute the autocorrelation time checking the exponential decay condition.
-        double autocorTime = 0.0;
         if (autocorrelation[t] > 0 && autocorrelation[t] < autocorrelation[t-1]) {
             double tempd = -gsl_sf_log(autocorrelation[t]);
             tempd = t / tempd;
@@ -113,7 +91,7 @@ std::unique_ptr<const BinningResults> calcBimodality(unsigned int bins,  int sam
     double lowerBound;
     double upperBound;
     double d_bins = static_cast<double>(bins);
-    for (unsigned int i = 0; i < sampleSize; i++) {
+    for (unsigned int i = 0; i < (unsigned int)sampleSize; i++) {
         for (unsigned int j = 0; j < bins; j++) {
             double d_j = static_cast<double>(j);
             lowerBound = maxPhi * (2 * (d_j / d_bins) - 1);
@@ -158,12 +136,26 @@ int main(int argc, char** const argv) {
     unsigned int init = atoi(argv[5]);         // Iterations for equilibration.
     unsigned int sampleSize = atoi(argv[6]);
 
+
     unsigned int latticeSize = xDim * yDim;
     double energyData[sampleSize];
     double phiData[sampleSize];
     double phiDataAbs[sampleSize];
 
     Lattice* lattice = new Lattice(muSqrd, lambda, xDim, yDim);
+
+    double avgEnergy      = 0;
+    double avgPhi         = 0;
+    double avgPhiAbs      = 0;
+    double sqrdEnergy     = 0;
+    double sqrdPhi        = 0;
+    double quartPhi       = 0;
+    double specificHeat   = 0;
+    double susceptibility = 0;
+    double energyStdDev   = 0;
+    double phiStdDev      = 0;
+
+    static const unsigned int bins = 21;
 
     // Initialize and equilibrate the lattice.
     // Do gap metropolis steps for each lattice site, then a wolff step.
@@ -172,20 +164,20 @@ int main(int argc, char** const argv) {
     unsigned int gap = 5;
     for (unsigned int i = 0; i < init; i++) {
         for (unsigned int j = 0; j < latticeSize * gap; j++) {
-            randomSite = (unsigned int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
+            randomSite = lattice->getRandomSite();
             lattice->metropolis(randomSite);
         }
-        randomSite = (unsigned int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
+        randomSite = lattice->getRandomSite();
         lattice->wolff(randomSite);
     }
 
 
     for (unsigned int i = 0; i < sampleSize; i++) {
         for (unsigned int j = 0; j < latticeSize * gap; j++) {
-            randomSite = (unsigned int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
+            randomSite = lattice->getRandomSite();
             lattice->metropolis(randomSite);
         }
-        randomSite = (unsigned int) floor(latticeSize * gsl_rng_uniform(lattice->generator));
+        randomSite = lattice->getRandomSite();
         lattice->wolff(randomSite);
 
         energyData[i] = lattice->calcTotalEnergy();
