@@ -6,6 +6,7 @@ Lattice Simulations of Nonperturbative Quantum Field Theories
 by David Schaich
 */
 #include <cmath>             // floor.
+#include <memory>
 #include "HashTable.h"
 #include "Lattice.h"
 #include <cstdio>            // For fflush and stdout.
@@ -244,21 +245,18 @@ void Lattice::growClusterNeg(unsigned int site) {
 }
 
 void Lattice::flipCluster() {
-    node* tmp1;
-    node* tmp2;
+    // There is no need to create empty nodes with std::make_shared<Node>()
+    // as we are only using existing nodes in the hash table.
 
     for (unsigned int i = 0; i < cluster->tableNumber; i++) {
-        tmp1 = cluster->table[i];
-        tmp2 = cluster->table[i];
-        while (tmp1 != NULL) {
-            lattice[tmp1->value] *= -1;
-            tmp2 = tmp2->next;
-            delete tmp1;
-            tmp1 = tmp2;
+        std::shared_ptr<Node> current = cluster->table[i];
+        while (current != nullptr) {
+            lattice[current->value] *= -1;  // Flip the value at index 'current->value' in 'lattice'.
+            current = current->next;       // Move to the next node.
         }
-        cluster->table[i] = NULL;
+        cluster->table[i] = nullptr;      // Clear the list by setting head to nullptr.
     }
-    cluster->size = 0;
+    cluster->size = 0;  // Reset the size of the hash table.
 }
 
 unsigned int Lattice::wolff(unsigned int site) {

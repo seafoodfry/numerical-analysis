@@ -20,57 +20,37 @@ the average list is only a few elements long. When we increased the number of li
 hash table from 97 to one quarter of the size of the lattice in \phi^4 simulations, the program's
 running time decreased by around 20%.
 */
+// HashTable.cpp
 #include "HashTable.h"
-#include <vector>
-#include <cstddef>  // NULL.
 
-HashTable::HashTable(unsigned int tableNum) : tableNumber(tableNum) {
-    size = 0;
-    std::vector<node*>* temp = new std::vector<node*>(tableNumber, NULL);
-    table = *temp;
-    mod = tableNumber - 1;
-}
+Node::Node(unsigned int val) : value(val), next(nullptr) {}
 
-HashTable::HashTable() {
-    HashTable(4093);
-}
+HashTable::HashTable(unsigned int tableNum)
+    : size(0), tableNumber(tableNum), table(tableNum, nullptr),  mod(tableNum - 1) {}
 
 void HashTable::insert(unsigned int site) {
+    auto index = site % tableNumber;
+    auto newNode = std::make_shared<Node>(site);
+    newNode->next = table[index];
+    table[index] = newNode;
     size++;
-
-    node* toAdd = new node;
-    toAdd->value = site;
-
-    unsigned int index = (17 * site - 97) & mod;
-    toAdd->next = table[index];
-    table[index] = toAdd;
 }
 
 bool HashTable::find(unsigned int site) {
-    unsigned int index = (17 * site - 97) & mod;
-    node* temp = table[index];
-
-    while (temp != NULL) {
-        if (site == temp->value) {
+    auto index = site % tableNumber;
+    auto current = table[index];
+    while (current) {
+        if (current->value == site) {
             return true;
         }
-        temp = temp->next;
+        current = current->next;
     }
     return false;
 }
 
 void HashTable::clear() {
-    // Step 1: Delete all nodes in each list.
-    for (unsigned int i = 0; i < table.size(); i++) {
-        node* current = table[i];
-        while (current != nullptr) {
-            node* toDelete = current;
-            current = current->next;
-            delete toDelete; // Delete the node to prevent memory leaks.
-        }
-        table[i] = nullptr; // Reset the head of the list to indicate it's empty.
+    for (auto& head : table) {
+        head = nullptr;  // Clears the list due to smart pointers
     }
-
-    // Step 2: Reset the hash table's state.
     size = 0;
 }

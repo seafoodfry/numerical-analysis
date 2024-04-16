@@ -5,35 +5,31 @@ This is based on https://inspirehep.net/literature/1386200 ,
 Lattice Simulations of Nonperturbative Quantum Field Theories
 by David Schaich
 */
-#ifndef _HASHTABLE_H
-#define _HASHTABLE_H
+// HashTable.h
+#pragma once
 
+#include <memory>
 #include <vector>
 
-// The original aim of this struct was to avoid the overhead of a class.
-struct node {
+struct Node {
     unsigned int value;
-    node* next;
+    std::shared_ptr<Node> next;
+
+    Node(unsigned int val);
 };
 
 class HashTable {
-    public:
-        HashTable(unsigned int tableNumber);
-        HashTable();
-        ~HashTable() = default;
+public:
+    explicit HashTable(unsigned int tableNumber = 4093);
+    ~HashTable() = default;
 
-        // Member functions.
-        void insert(unsigned int site);
-        bool find(unsigned int site);
-        void clear();
+    void insert(unsigned int site);
+    bool find(unsigned int site);
+    void clear();
 
-        // Member data.
-        unsigned int size;
-        unsigned int tableNumber;
-        unsigned int mod;
-        std::vector<node*> table;
-    private:
+    unsigned int size;
+    unsigned int tableNumber;
+    std::vector<std::shared_ptr<Node>> table;
+private:
+    unsigned int mod;
 };
-
-
-#endif //_HASHTABLE_H
