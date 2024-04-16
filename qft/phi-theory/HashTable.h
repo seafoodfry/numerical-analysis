@@ -1,10 +1,3 @@
-/* HasTable.h
-Implements a basic hash table with chaining.
-
-This is based on https://inspirehep.net/literature/1386200 ,
-Lattice Simulations of Nonperturbative Quantum Field Theories
-by David Schaich
-*/
 // HashTable.h
 #pragma once
 
@@ -13,7 +6,7 @@ by David Schaich
 
 struct Node {
     unsigned int value;
-    std::shared_ptr<Node> next;
+    std::unique_ptr<Node> next;
 
     Node(unsigned int val);
 };
@@ -27,9 +20,12 @@ public:
     bool find(unsigned int site);
     void clear();
 
+    const std::vector<std::unique_ptr<Node>>& getTable() const;  // Expose table for external manipulation.
+    unsigned int getTableSize() const;  // Get the size of the table.
+    unsigned int getNumberOfNodes() const;  // Get the total number of nodes.
+
+private:
     unsigned int size;
     unsigned int tableNumber;
-    std::vector<std::shared_ptr<Node>> table;
-private:
-    unsigned int mod;
+    std::vector<std::unique_ptr<Node>> table;
 };

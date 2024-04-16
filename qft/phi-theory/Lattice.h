@@ -25,7 +25,7 @@ struct siteNeighbours {
 
 class Lattice {
     public:
-        Lattice(double mu, double lambda, unsigned int x, unsigned int y);
+        explicit Lattice(double mu, double lambda, unsigned int x, unsigned int y);
         ~Lattice() = default; // Destructor is no longer required to delete cluster.
 
         void printLattice();

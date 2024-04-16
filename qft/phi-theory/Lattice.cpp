@@ -245,18 +245,18 @@ void Lattice::growClusterNeg(unsigned int site) {
 }
 
 void Lattice::flipCluster() {
-    // There is no need to create empty nodes with std::make_shared<Node>()
-    // as we are only using existing nodes in the hash table.
-
-    for (unsigned int i = 0; i < cluster->tableNumber; i++) {
-        std::shared_ptr<Node> current = cluster->table[i];
+    // Get direct reference to the table. Note that the reference is read-only.
+    const auto& table = cluster->getTable();
+    for (unsigned int i = 0; i < cluster->getTableSize(); i++) {
+        // This prevents moving the pointer - std::move(table[i]) - and destroying them.
+        // Analogoues to cluster->table[i];
+        auto* current = table[i].get();
         while (current != nullptr) {
             lattice[current->value] *= -1;  // Flip the value at index 'current->value' in 'lattice'.
-            current = current->next;       // Move to the next node.
+            current = current->next.get(); // current->next; Move to the next node.
         }
-        cluster->table[i] = nullptr;      // Clear the list by setting head to nullptr.
     }
-    cluster->size = 0;  // Reset the size of the hash table.
+    cluster->clear();
 }
 
 unsigned int Lattice::wolff(unsigned int site) {
@@ -268,7 +268,7 @@ unsigned int Lattice::wolff(unsigned int site) {
         growClusterNeg(site);
     }
 
-    unsigned int toReturn = cluster->size;
+    unsigned int toReturn = cluster->getNumberOfNodes();
     flipCluster();
     return toReturn;
 }

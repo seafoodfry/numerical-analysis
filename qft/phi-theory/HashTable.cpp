@@ -26,31 +26,45 @@ running time decreased by around 20%.
 Node::Node(unsigned int val) : value(val), next(nullptr) {}
 
 HashTable::HashTable(unsigned int tableNum)
-    : size(0), tableNumber(tableNum), table(tableNum, nullptr),  mod(tableNum - 1) {}
+    : size(0), tableNumber(tableNum), table(tableNum) {}
 
 void HashTable::insert(unsigned int site) {
     auto index = site % tableNumber;
-    auto newNode = std::make_shared<Node>(site);
-    newNode->next = table[index];
-    table[index] = newNode;
+    auto newNode = std::make_unique<Node>(site);
+    // We wouldn't need the std::move if we had shared_ptrs.
+    newNode->next = std::move(table[index]);  // Like ewNode->next = table[index];
+    table[index] = std::move(newNode);  // Like table[index] = newNode;
     size++;
 }
 
 bool HashTable::find(unsigned int site) {
     auto index = site % tableNumber;
-    auto current = table[index];
+    auto current = table[index].get();  // The .get() is not necessary for s shared_ptr.
     while (current) {
         if (current->value == site) {
             return true;
         }
-        current = current->next;
+        current = current->next.get();  // The .get() is not necessary for s shared_ptr.
     }
     return false;
 }
 
 void HashTable::clear() {
     for (auto& head : table) {
-        head = nullptr;  // Clears the list due to smart pointers
+        // head = nullptr;  // Clears the list due to smart pointers
+        head.reset();
     }
     size = 0;
+}
+
+const std::vector<std::unique_ptr<Node>>& HashTable::getTable() const {
+    return table;
+}
+
+unsigned int HashTable::getTableSize() const {
+    return tableNumber;
+}
+
+unsigned int HashTable::getNumberOfNodes() const {
+    return size;
 }
