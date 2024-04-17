@@ -61,7 +61,7 @@ class Lattice {
         std::unique_ptr<HashTable> cluster;
 
         double genU();
-        double genRandomPhi();
+        double genRandomPhiValue();
         void getHelicalNeighbours(unsigned int site, siteNeighbours* toInit);
 };
 

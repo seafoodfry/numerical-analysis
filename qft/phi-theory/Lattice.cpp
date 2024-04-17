@@ -13,8 +13,6 @@ by David Schaich
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_sf_exp.h>  // Exp.
 
-#include <iostream>
-
 
 Lattice::Lattice(double m, double l, unsigned int x, unsigned int y)
     : muSquared(2 + (m / 2.0)), lambda(l / 4.0),
@@ -29,7 +27,7 @@ Lattice::Lattice(double m, double l, unsigned int x, unsigned int y)
 
     for (unsigned int i = 0; i < latticeSize; ++i) {
         // Initialize the lattice with values [-1.5, 1.5).
-        lattice[i] = genRandomPhi();
+        lattice[i] = genRandomPhiValue();
 
         // Initialize the neighbours vector. Calculate one siteNeighbours for each site.
         neighbours[i] = std::make_unique<siteNeighbours>();
@@ -46,8 +44,8 @@ unsigned int Lattice::getRandomSite() {
     return (unsigned int) floor(latticeSize * genU());
 }
 
-// genRandomPhi generates values in the range [-1.5, 1.5) uniformly.
-double Lattice::genRandomPhi() {
+// genRandomPhiValue generates values in the range [-1.5, 1.5) uniformly.
+double Lattice::genRandomPhiValue() {
     return 3 * genU() - 1.5;
 }
 
@@ -161,7 +159,7 @@ double Lattice::calcAvgPhi() {
 
 void Lattice::metropolis(unsigned int site) {
     double currentPhi = lattice[site];
-    double newValue = genRandomPhi();
+    double newValue = genRandomPhiValue();
     double tmp = newValue;
 
     // Compute energy difference.

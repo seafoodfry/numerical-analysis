@@ -33,8 +33,8 @@ std::unique_ptr<const AutocorrelationResults> caclAutocorTime(
     double avgPhiAbs, 
     const double* phiDataAbs) {
 
-    double scaleFactor = 0;
     // Compute \chi[0].
+    double scaleFactor = 0;
     for (unsigned int i = 0; i < sampleSize; i++) {
         scaleFactor += (phiDataAbs[i] * phiDataAbs[i]);
     }
@@ -46,7 +46,7 @@ std::unique_ptr<const AutocorrelationResults> caclAutocorTime(
     unsigned int t = 1;
     double autocorTime = 0;
     std::vector<double> autocorrelation(sampleSize);
-    autocorrelation[0] = 1;
+    autocorrelation[0] = 1.0;
     while (t < sampleSize) {
         // Copute the autocorrelation of |<\phi>|.
         autocorrelation[t] = 0.0;
