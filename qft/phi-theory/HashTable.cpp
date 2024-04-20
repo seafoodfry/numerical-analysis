@@ -20,59 +20,51 @@ the average list is only a few elements long. When we increased the number of li
 hash table from 97 to one quarter of the size of the lattice in \phi^4 simulations, the program's
 running time decreased by around 20%.
 */
+// HashTable.cpp
 #include "HashTable.h"
-#include <vector>
-#include <cstddef>  // NULL.
 
-HashTable::HashTable(unsigned int tableNumber) {
-    size = 0;
-    std::vector<node*>* temp = new std::vector<node*>(tableNumber, NULL);
-    table = *temp;
-    mod = tableNumber - 1;
-}
+Node::Node(unsigned int val) : value(val), next(nullptr) {}
 
-HashTable::HashTable() {
-    HashTable(4093);
-}
-
-HashTable::~HashTable() {}
+HashTable::HashTable(unsigned int tableNum)
+    : size(0), tableNumber(tableNum), table(tableNum) {}
 
 void HashTable::insert(unsigned int site) {
+    auto index = site % tableNumber;
+    auto newNode = std::make_unique<Node>(site);
+    // We wouldn't need the std::move if we had shared_ptrs.
+    newNode->next = std::move(table[index]);  // Like ewNode->next = table[index];
+    table[index] = std::move(newNode);  // Like table[index] = newNode;
     size++;
-
-    node* toAdd = new node;
-    toAdd->value = site;
-
-    unsigned int index = (17 * site - 97) & mod;
-    toAdd->next = table[index];
-    table[index] = toAdd;
 }
 
 bool HashTable::find(unsigned int site) {
-    unsigned int index = (17 * site - 97) & mod;
-    node* temp = table[index];
-
-    while (temp != NULL) {
-        if (site == temp->value) {
+    auto index = site % tableNumber;
+    auto current = table[index].get();  // The .get() is not necessary for s shared_ptr.
+    while (current) {
+        if (current->value == site) {
             return true;
         }
-        temp = temp->next;
+        current = current->next.get();  // The .get() is not necessary for s shared_ptr.
     }
     return false;
 }
 
 void HashTable::clear() {
-    // Step 1: Delete all nodes in each list.
-    for (unsigned int i = 0; i < table.size(); i++) {
-        node* current = table[i];
-        while (current != nullptr) {
-            node* toDelete = current;
-            current = current->next;
-            delete toDelete; // Delete the node to prevent memory leaks.
-        }
-        table[i] = nullptr; // Reset the head of the list to indicate it's empty.
+    for (auto& head : table) {
+        // head = nullptr;  // Clears the list due to smart pointers
+        head.reset();
     }
-
-    // Step 2: Reset the hash table's state.
     size = 0;
+}
+
+const std::vector<std::unique_ptr<Node>>& HashTable::getTable() const {
+    return table;
+}
+
+unsigned int HashTable::getTableSize() const {
+    return tableNumber;
+}
+
+unsigned int HashTable::getNumberOfNodes() const {
+    return size;
 }

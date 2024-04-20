@@ -1,39 +1,31 @@
-/* HasTable.h
-Implements a basic hash table with chaining.
+// HashTable.h
+#pragma once
 
-This is based on https://inspirehep.net/literature/1386200 ,
-Lattice Simulations of Nonperturbative Quantum Field Theories
-by David Schaich
-*/
-#ifndef _HASHTABLE_H
-#define _HASHTABLE_H
-
+#include <memory>
 #include <vector>
 
-// The original aim of this struct was to avoid the overhead of a class.
-struct node {
+struct Node {
     unsigned int value;
-    node* next;
+    std::unique_ptr<Node> next;
+
+    Node(unsigned int val);
 };
 
 class HashTable {
-    public:
-        HashTable(unsigned int tableNumber);
-        HashTable();
-        ~HashTable();
+public:
+    explicit HashTable(unsigned int tableNumber = 4093);
+    ~HashTable() = default;
 
-        // Member functions.
-        void insert(unsigned int site);
-        bool find(unsigned int site);
-        void clear();
+    void insert(unsigned int site);
+    bool find(unsigned int site);
+    void clear();
 
-        // Member data.
-        unsigned int size;
-        unsigned int tableNumber;
-        unsigned int mod;
-        std::vector<node*> table;
-    private:
+    const std::vector<std::unique_ptr<Node>>& getTable() const;  // Expose table for external manipulation.
+    unsigned int getTableSize() const;  // Get the size of the table.
+    unsigned int getNumberOfNodes() const;  // Get the total number of nodes.
+
+private:
+    unsigned int size;
+    unsigned int tableNumber;
+    std::vector<std::unique_ptr<Node>> table;
 };
-
-
-#endif //_HASHTABLE_H
