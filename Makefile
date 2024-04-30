@@ -3,10 +3,14 @@ IMG := numa-lab
 
 .PHONY: venv
 venv:
-	python3 -m venv .venv
-	.venv/bin/python -m pip install --upgrade pip
-	.venv/bin/pip install -r requirements.txt
+	uv venv .venv  #python3 -m venv .venv
+	uv pip sync requirements.txt  #.venv/bin/python -m pip install --upgrade pip
+	#.venv/bin/pip install -r requirements.txt
 
+.PHONY: deps
+deps:
+	uv pip sync requirements.txt
+	uv pip freeze | uv pip compile - -o requirements.txt
 
 .PHONY: test
 test: lint
