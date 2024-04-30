@@ -3,9 +3,9 @@ IMG := numa-lab
 
 .PHONY: venv
 venv:
-	uv venv .venv  #python3 -m venv .venv
-	uv pip sync requirements.txt  #.venv/bin/python -m pip install --upgrade pip
-	#.venv/bin/pip install -r requirements.txt
+	python3 -m venv .venv  # uv venv .venv
+	.venv/bin/python -m pip install --upgrade pip
+	.venv/bin/pip install -r requirements.txt  # uv pip sync requirements.txt
 
 .PHONY: deps
 deps:
