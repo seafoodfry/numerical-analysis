@@ -9,4 +9,5 @@ pip==24.0
 pluggy==1.5.0
     # via pytest
 pytest==8.2.0
-ruff==0.4.1
+ruff==0.4.4
+tomli==2.0.1
