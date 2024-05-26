@@ -1,10 +1,16 @@
+"""
+Implementation based on Numerical ANalysis 2nd ed by Timoty Sauer
+"""
+
 from typing import Callable
 
 from .exceptions import NoSolution
 
 
-def bisection_eq_solver(func: Callable[[float], float], a: float, b: float, tolerance: float) -> float:
-    """ Use the bisection method to find the roots of a function
+def bisection_eq_solver(
+    func: Callable[[float], float], a: float, b: float, tolerance: float
+) -> float:
+    """Use the bisection method to find the roots of a function
 
     INPUT
     -----
@@ -22,10 +28,10 @@ def bisection_eq_solver(func: Callable[[float], float], a: float, b: float, tole
 
     iter = 1
     approximation = 0
-    while (b-a)/2.0 > tolerance:
+    while (b - a) / 2.0 > tolerance:
         print(f"Iteration number {iter}")
         iter += 1
-        c = (a+b)/2.0  # Midway point.
+        c = (a + b) / 2.0  # Midway point.
         f_c = func(c)
 
         approximation = c
@@ -43,8 +49,10 @@ def bisection_eq_solver(func: Callable[[float], float], a: float, b: float, tole
     return approximation
 
 
-def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_iterations: int) -> float:
-    """ Secant method for finding roots
+def secant_eq_solver(
+    func: Callable[[float], float], x0: float, x1: float, max_iterations: int
+) -> float:
+    """Secant method for finding roots
 
     x[i+1] = ( f(x[i]) * (x[i] - x[i-1]) ) / ( f(x[i]) - f([x-1]) )
 
@@ -59,6 +67,7 @@ def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_i
     ------
     Approximate solution
     """
+
     def iteration(func: Callable[[float], float], x0: float, x1: float) -> float:
         f_x1 = func(x1)
         f_x0 = func(x0)
@@ -81,6 +90,7 @@ def secant_eq_solver(func: Callable[[float], float], x0: float, x1: float, max_i
 
 
 if __name__ == "__main__":
+
     def func(x):
         return x**3 + x - 1
 

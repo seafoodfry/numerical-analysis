@@ -1,0 +1,24 @@
+name: QFT Builds
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    #defaults:
+      #run:
+        #working-directory: qft/ising/
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Ising Model Image
+        working-directory: qft/ising/
+        run: make build IMG=ci-ising
+      - name: Test Ising Model Binary
+        working-directory: qft/ising/
+        run: docker run ci-ising /home/jovyan/work/Metropolis 32 32 1000 1000 220 autocor.txt /tmp snaps 100
+      - name: Build 2D phi Model Image
+        working-directory: qft/phi-theory/
+        run: make build IMG=ci-phi
+      - name: Test phi4 Model Binary
+        working-directory: qft/phi-theory/
+        run: docker run ci-phi /home/jovyan/work/Simulation 0.1 0.1 16 16 100 100
