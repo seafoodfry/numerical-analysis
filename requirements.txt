@@ -3,7 +3,7 @@
 iniconfig==2.0.0
     # via pytest
 numpy==1.26.4
-packaging==24.0
+packaging==24.1
     # via pytest
 pip==24.0
 pluggy==1.5.0
