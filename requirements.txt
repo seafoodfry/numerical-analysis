@@ -2,7 +2,7 @@
 #    uv pip compile - -o requirements.txt
 iniconfig==2.0.0
     # via pytest
-numpy==1.26.4
+numpy==2.0.0
 packaging==24.1
     # via pytest
 pip==24.0
