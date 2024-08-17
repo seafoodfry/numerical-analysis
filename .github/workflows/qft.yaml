@@ -9,7 +9,7 @@ jobs:
       #run:
         #working-directory: qft/ising/
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Ising Model Image
         working-directory: qft/ising/
         run: make build IMG=ci-ising
