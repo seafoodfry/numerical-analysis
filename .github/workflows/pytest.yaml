@@ -30,3 +30,5 @@ jobs:
         run: make lint POETRY=$POETRY
       - name: Test with pytest
         run: make test POETRY=$POETRY
+      - name: Test the Container Build
+        run: make build

@@ -3,22 +3,36 @@
 ## Python Virtual Environment
 
 ```
-python3 -m venv ./venv
+VENV_PATH=~/.poetry
+python3 -m venv $VENV_PATH
+$VENV_PATH/bin/pip install poetry
+```
+
+To add dev dependencies run
+```
+~/.poetry/bin/poetry add --group=dev scipy
+```
+
+To update a package, run
+
+```
+~/.poetry/bin/poetry update scipy
 ```
 
 ## Tests
 
 ```
-python -m pytest -v
+make tests
 ```
 
 ## Run Individual Scripts
 
 ```
-python -m numa.equation_solvers
+~/.poetry/bin/potery run python -m numa.equation_solvers
 ```
 
-or
+## Run jupyterLab
+
 ```
-.venv/bin/python -m numa.equation_systems
+make debug
 ```
