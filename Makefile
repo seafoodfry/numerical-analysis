@@ -1,3 +1,4 @@
+POETRY := ~/.poetry/bin/poetry
 IMG := numa-lab
 
 
@@ -7,19 +8,14 @@ venv:
 	.venv/bin/python -m pip install --upgrade pip
 	.venv/bin/pip install -r requirements.txt  # uv pip sync requirements.txt
 
-.PHONY: deps
-deps:
-	uv pip sync requirements.txt
-	uv pip freeze | uv pip compile - -o requirements.txt
-
 .PHONY: test
 test: lint
-	.venv/bin/python -m pytest -v
+	${POETRY} run pytest -v
 
 .PHONY: lint
 lint:
-	.venv/bin/ruff format numa
-	.venv/bin/ruff check numa
+	${POETRY} run ruff format numa
+	${POETRY} run ruff check numa
 
 .PHONY: debug
 debug: network build
