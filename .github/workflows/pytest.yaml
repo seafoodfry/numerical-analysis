@@ -25,7 +25,7 @@ jobs:
           $POETRY --version
       - name: Install dependencies
         run: |
-          $POETRY install
+          make setup POETRY=$POETRY
       - name: Lint
         run: make lint POETRY=$POETRY
       - name: Test with pytest
