@@ -31,7 +31,7 @@ make tests
 ~/.poetry/bin/potery run python -m numa.equation_solvers
 ```
 
-## Run jupyterLab
+## Run Jupyter Lab
 
 ```
 make debug
