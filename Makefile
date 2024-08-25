@@ -1,6 +1,19 @@
 POETRY := ~/.poetry/bin/poetry
 IMG := numa-lab
 
+DOCKER_RUN := docker run -it \
+	--rm \
+	--cap-drop all \
+	--security-opt=no-new-privileges \
+	--network $(IMG) \
+	--memory="2000m" \
+	--cpus="2" \
+	--ulimit nofile=100 \
+	--ulimit nproc=30 \
+	-p 8888:8888 \
+	-v $(CURDIR):/home/jovyan/work \
+	--name $(IMG) \
+	$(IMG)
 
 .PHONY: setup
 setup:
@@ -15,21 +28,13 @@ lint:
 	${POETRY} run ruff format numa
 	${POETRY} run ruff check numa
 
+.PHONY: shell
+shell: network build
+	${DOCKER_RUN} bash
+
 .PHONY: debug
 debug: network build
-	docker run -it \
-		--rm \
-		--cap-drop all \
-		--security-opt=no-new-privileges \
-		--network $(IMG) \
-		--memory="2000m" \
-		--cpus="2" \
-		--ulimit nofile=100 \
-		--ulimit nproc=30 \
-		-p 8888:8888 \
-		-v $(CURDIR):/home/jovyan/work \
-		--name $(IMG) \
-		$(IMG)
+	${DOCKER_RUN}
 
 .PHONY: exec
 exec:
