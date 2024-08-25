@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "numerical-analysis"
+version = "0.1.0"
+description = ""
+authors = ["seafoodfry <99568361+seafoodfry@users.noreply.github.com>"]
+readme = "README.md"
+
+packages = [
+    { include = "numa" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^2.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+ruff = "^0.6.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
