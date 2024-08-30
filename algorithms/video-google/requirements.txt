@@ -1,2 +1,2 @@
-opencv-contrib-python==4.6.0.66
+opencv-contrib-python==4.8.1.78
 pytube==12.1.0
