@@ -16,7 +16,7 @@ numpy = "^2.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
-ruff = "^0.6.7"
+ruff = "^0.6.9"
 scipy = "^1.14.1"
 matplotlib = "^3.9.2"
 jupyterlab = "^4.2.5"
