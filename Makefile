@@ -9,7 +9,7 @@ DOCKER_RUN := docker run -it \
 	--memory="2000m" \
 	--cpus="2" \
 	--ulimit nofile=100 \
-	--ulimit nproc=30 \
+	--ulimit nproc=100 \
 	-p 8888:8888 \
 	-v $(CURDIR):/home/jovyan/work \
 	--name $(IMG) \
