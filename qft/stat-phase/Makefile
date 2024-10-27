@@ -2,7 +2,7 @@
 debug:
 	docker build -t debug -f Dockerfile.dev .
 	docker run -it \
-		-v $(PWD):/src/app \
+		-v $(PWD)/stationary-phase:/src/app \
 		debug bash
 
 .PHONY: run-app
