@@ -3,6 +3,7 @@ debug:
 	docker build -t debug -f Dockerfile.dev .
 	docker run -it \
 		-v $(PWD)/stationary-phase:/src/app \
+		-p 3000:3000 \
 		debug bash
 
 .PHONY: run-app
