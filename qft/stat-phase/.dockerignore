@@ -1,0 +1,32 @@
+# Ignore node_modules to prevent duplicating dependencies
+node_modules
+# Ignore lock files (optional, if you want fresh installs in Docker)
+#package-lock.json
+
+# Ignore local environment configurations
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore Next.js build output (these are rebuilt within Docker)
+.next
+out
+
+# Ignore development tools and config files
+.DS_Store
+.git
+.gitignore
+.eslintrc.json
+.vscode
+README.md
+# Ignore TypeScript configs (if not needed for build in Docker)
+tsconfig.json
+next-env.d.ts
+
+# Ignore other local config and IDE files
+*.log
+.idea
+*.swp
+*.bak
