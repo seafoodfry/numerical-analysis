@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+
 
 const StatPhaseViz = () => {
   const [lambda, setLambda] = useState(1);
@@ -29,6 +32,10 @@ const StatPhaseViz = () => {
         </div>
       </CardHeader>
       <CardContent>
+        <BlockMath>
+          {`I(\\lambda) = \\int_{-\\infty}^{\\infty} e^{i \\lambda x^2} \\, dx`}
+        </BlockMath>
+
         <div className="mb-6">
           <p className="mb-2">Adjust λ to see how oscillations change:</p>
           <Slider 
