@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+
 
 const StatPhaseViz = () => {
   const [lambda, setLambda] = useState(1);
-  
+
   // Generate data points
   const generateData = () => {
     const data = [];
@@ -29,6 +32,10 @@ const StatPhaseViz = () => {
         </div>
       </CardHeader>
       <CardContent>
+        <BlockMath>
+          {`I(\\lambda) = \\int_{-\\infty}^{\\infty} f(x) \\, e^{i \\lambda S(x)} \\, dx = \\int_{-\\infty}^{\\infty} e^{i \\lambda x^2} \\, dx`}
+        </BlockMath>
+
         <div className="mb-6">
           <p className="mb-2">Adjust λ to see how oscillations change:</p>
           <Slider 
@@ -40,17 +47,25 @@ const StatPhaseViz = () => {
             className="w-64"
           />
         </div>
-        <LineChart width={600} height={300} data={generateData()} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+        <LineChart width={800} height={300} data={generateData()} margin={{ top: 5, right: 20, bottom: 5, left: 20 }}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="x" 
             label={{ value: 'x', position: 'bottom' }} 
-            tickFormatter={(value) => value.toFixed(3)} 
+            tickFormatter={(value) => value.toFixed(2)} 
           />
-          <YAxis domain={[-1.2, 1.2]} label={{ value: 'Re[exp(iλx²)]', angle: -90, position: 'left' }} />
+          <YAxis
+            domain={[-1.2, 1.2]}
+            label={{
+              value: 'Re[exp(iλx²)]',
+              angle: -90,
+              position: 'left',
+              style: { textAnchor: 'middle' },
+            }}
+          />
           <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} />
           <Tooltip />
-          <Legend verticalAlign="top" align="right"  />
+          {/* <Legend verticalAlign="top" align="right" /> */}
         </LineChart>
         <div className="mt-4 text-sm text-gray-600">
           Notice how the oscillations become more rapid away from x=0 (the stationary point) as λ increases.
