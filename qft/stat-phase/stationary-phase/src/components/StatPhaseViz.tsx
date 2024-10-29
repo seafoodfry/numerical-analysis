@@ -33,7 +33,7 @@ const StatPhaseViz = () => {
       </CardHeader>
       <CardContent>
         <BlockMath>
-          {`I(\\lambda) = \\int_{-\\infty}^{\\infty} e^{i \\lambda x^2} \\, dx`}
+          {`I(\\lambda) = \\int_{-\\infty}^{\\infty} f(x) \\, e^{i \\lambda S(x)} \\, dx = \\int_{-\\infty}^{\\infty} e^{i \\lambda x^2} \\, dx`}
         </BlockMath>
 
         <div className="mb-6">
