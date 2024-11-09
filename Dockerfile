@@ -1,4 +1,5 @@
-FROM python:3.12.5-bookworm
+# Version https://devguide.python.org/versions/
+FROM python:3.13-bookworm
 
 # Same values as docker-stack-foundation.
 # See
@@ -19,6 +20,19 @@ RUN useradd --no-log-init --create-home --shell /bin/bash --uid "${NB_UID}" --no
 RUN apt-get update -y && \
     apt-get install less vim -y
 
+# compilers -> build-essential
+# pdflatex -> install texlive-latex-base
+# pdfcrop -> texlive-extra-utils - crops the whitespace around the contents of a PDF.
+# convert -> imagemagick - for converting PDF to PNG
+# ffmpeg -> ffmpeg - creates video from a sequence of images
+RUN apt-get update -y && \
+    apt-get install -y \
+    build-essential \
+    texlive-latex-base \
+    texlive-extra-utils \
+    texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra \
+    imagemagick \
+    ffmpeg
 
 ##############################
 ### Non-Root Configuration ###
@@ -30,7 +44,7 @@ WORKDIR /home/jovyan/work
 #######################
 # Poetry Installation #
 #######################
-ENV POETRY_VERSION=1.8.3
+ENV POETRY_VERSION=1.8.4
 ENV POETRY_HOME=/home/${NB_USER}/.poetry
 RUN python3 -m venv ${POETRY_HOME} && \
     $POETRY_HOME/bin/pip install poetry==${POETRY_VERSION}
