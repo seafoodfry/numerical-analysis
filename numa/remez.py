@@ -1,3 +1,1 @@
-""" Remez Algorithm implementation
-"""
-
+"""Remez Algorithm implementation"""

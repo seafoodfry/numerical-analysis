@@ -150,7 +150,7 @@ def jacobi(A: npt.NDArray, b: npt.ArrayLike, x: npt.ArrayLike, k: int) -> npt.Ar
         # We could also do D^-1 = np.linalg.inv(D)
         # See https://numpy.org/devdocs/reference/generated/numpy.linalg.inv.html#numpy.linalg.inv
         x = (b - np.dot(R, x)) / D
-        print(f"jacobi iteration {i+1}. current X= {x}")
+        print(f"jacobi iteration {i + 1}. current X= {x}")
     return x
 
 
