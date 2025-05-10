@@ -6,29 +6,13 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.12"]
-    env:
-      POETRY_HOME: "/opt/poetry"
-      POETRY: "/opt/poetry/bin/poetry"
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install poetry
-        run: |
-          python3 -m venv $POETRY_HOME
-          $POETRY_HOME/bin/pip install poetry==1.8.3
-          $POETRY --version
-      - name: Install dependencies
-        run: |
-          make setup POETRY=$POETRY
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
       - name: Lint
-        run: make lint POETRY=$POETRY
+        run: make lint
       - name: Test with pytest
-        run: make test POETRY=$POETRY
+        run: make test
       - name: Test the Container Build
         run: make build
