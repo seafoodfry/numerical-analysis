@@ -2,35 +2,31 @@
 
 ## Python Virtual Environment
 
+Install uv!
+
+---
+## Dep management
+
+For dev deps:
 ```
-VENV_PATH=~/.poetry
-python3 -m venv $VENV_PATH
-$VENV_PATH/bin/pip install poetry
+uv add --dev pytest
 ```
 
-To add dev dependencies run
-```
-~/.poetry/bin/poetry add --group=dev scipy
-```
-
-To update a package, run
-
-```
-~/.poetry/bin/poetry update scipy
-```
-
+---
 ## Tests
 
 ```
 make tests
 ```
 
+---
 ## Run Individual Scripts
 
 ```
 ~/.poetry/bin/potery run python -m numa.equation_solvers
 ```
 
+---
 ## Run Jupyter Lab
 
 ```
