@@ -12,6 +12,8 @@ jobs:
         uses: astral-sh/setup-uv@v5
       - name: Lint
         run: make lint
+      - name: Install numa
+        run: uv pip install --editable .
       - name: Test with pytest
         run: make test
       - name: Test the Container Build
