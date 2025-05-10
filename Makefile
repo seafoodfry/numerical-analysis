@@ -1,4 +1,3 @@
-POETRY := ~/.poetry/bin/poetry
 IMG := numa-lab
 
 DOCKER_RUN := docker run -it \
@@ -15,18 +14,14 @@ DOCKER_RUN := docker run -it \
 	--name $(IMG) \
 	$(IMG)
 
-.PHONY: setup
-setup:
-	${POETRY} install
-
 .PHONY: test
-test: setup lint
-	${POETRY} run pytest -v
+test: lint
+	uv run pytest -v
 
 .PHONY: lint
 lint:
-	${POETRY} run ruff format numa
-	${POETRY} run ruff check numa
+	uv run ruff format numa
+	uv run ruff check numa
 
 .PHONY: shell
 shell: network build
@@ -34,6 +29,7 @@ shell: network build
 
 .PHONY: debug
 debug: network build
+	rm -r .venv
 	${DOCKER_RUN}
 
 .PHONY: exec
