@@ -1,4 +1,4 @@
 build==1.1.1
 Cython==3.0.9
 meson==1.4.0
-setuptools==70.0.0
+setuptools==78.1.1
